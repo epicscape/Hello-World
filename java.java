@@ -11,9 +11,9 @@ public class Sounds {
 
 
     /**
-     * @author mgi125
+     * @author Meow
      */
-    public static final int NexNoEscape = 3292, NexBloodSacrifice = 3293,
+    public static final int NexNoEscape2 = 3292, NexBloodSacrifice = 3293,
             NexThereIs = 3294, NexAtLast = 3295, NexVirus = 3296,
             NexCrourDontFail = 3298, NexCrour = 3299, NexDarken = 3302,
             NexInfuseMeIce = 3303, NexGlacies = 3304, NexFloodBlood = 3306,
@@ -27,7 +27,7 @@ public class Sounds {
      * Sends a certain sound to all players in distance of the center location.
      * @param center The center location.
      * @param sound The sound to play.
-     * @param distance The distance.
+     * @param distance The distance and this new shit i write here.	
      */
     public static void playSound(Location center, int sound, int distance) {
     	List<Player> players = Region.getLocalPlayers(center, distance);
