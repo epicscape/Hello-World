@@ -237,6 +237,11 @@ public final class Commands {
 	}
 
 	public static void adminCommands(final Player player, String[] command) {
+		if (command[0].equals("debuginter")) {
+			for (int i = 0; i < 32; i++) {
+				ActionSender.sendString(player, Integer.toString(i), Integer.parseInt(command[1]), i);
+			}
+		}
 		if (command[0].equals("shopfree")) {
 			ActionSender.sendConfig(player, 118, 4);
 			ActionSender.sendConfig(player, 1496, -1);
@@ -979,7 +984,7 @@ public final class Commands {
 		if (command[0].equals("findconfig")) {
 			if (command.length == 1) {
 				World.getWorld().submit(new Tick(2) {
-					int i = 320;
+					int i = 1000;
 
 					@Override
 					public void execute() {
