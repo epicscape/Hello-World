@@ -20,8 +20,6 @@ public class TradeSession {
     private Container traderItemsOffered = new Container(28, false);
     private Container partnerItemsOffered = new Container(28, false);
     private boolean traderDidAccept, partnerDidAccept;
-    private boolean tradeModifiedPartner;
-    private boolean tradeModifiedTrader;
 
     /*
       * Some info for the future,
@@ -30,11 +28,7 @@ public class TradeSession {
       * 45 = right limit
       */
 
-	public void tradeWarning(Player player, int slot) {
-		Object[] opt = new Object[]{slot, 7, 4, 21954593};
-		ActionSender.sendClientScript(player, 143, opt, "Iiii");
-	}
-	
+
     public TradeSession(Player trader, Player partner) {
         this.trader = trader;
         this.partner = partner;
@@ -59,12 +53,9 @@ public class TradeSession {
         ActionSender.sendItems(p, 90, traderItemsOffered, false);
         ActionSender.sendItems(p, 90, partnerItemsOffered, true);
         ActionSender.sendString(p, "", 335, 37);
-        String name = trader.getUsername();
-        String name1 = partner.getUsername();
-        ActionSender.sendString(partner, "Trading with: " + Misc.formatPlayerNameForDisplay(name), 335, 15);
-        ActionSender.sendString(trader, "Trading with: " + Misc.formatPlayerNameForDisplay(name1), 335, 15);
-        ActionSender.sendString(partner, Misc.formatPlayerNameForDisplay(name), 335, 22);
-        ActionSender.sendString(trader, Misc.formatPlayerNameForDisplay(name1), 335, 22);
+        String name = p.equals(trader) ? partner.getUsername() : trader.getUsername();
+        ActionSender.sendString(p, "Trading with: " + Misc.formatPlayerNameForDisplay(name), 335, 15);
+        ActionSender.sendString(p, Misc.formatPlayerNameForDisplay(name), 335, 22);
     }
 
     public void openSecondTradeScreen(Player p) {
@@ -75,14 +66,6 @@ public class TradeSession {
         ActionSender.sendString(p, "<col=00FFFF>Trading with:<br><col=00FFFF>" + Misc.formatPlayerNameForDisplay(p.equals(trader) ? partner.getUsername() : trader.getUsername()), 334, 54);
         ActionSender.sendString(p, "Are you sure you want to make this trade?", 334, 34);
     }
-    
-	public boolean isTradeModifiedPartner() {
-		return tradeModifiedPartner;
-	}
-	
-	public boolean isTradeModifiedTrader() {
-		return tradeModifiedTrader;
-	}
 
     public void offerItem(Player pl, int slot, int amt) {
         if (currentState.equals(TradeState.STATE_ONE)) {
@@ -115,7 +98,6 @@ public class TradeSession {
                     traderItemsOffered.add(item);
                     pl.getInventory().getContainer().remove(new Item(pl.getInventory().getContainer().get(slot).getId(), amt));
                     pl.getInventory().refresh();
-                    tradeModifiedTrader = false;
                 }
             } else if (pl.equals(partner)) {
                 Item inventoryItem = pl.getInventory().getContainer().get(slot);
@@ -144,7 +126,6 @@ public class TradeSession {
                     partnerItemsOffered.add(item);
                     pl.getInventory().getContainer().remove(item);
                     pl.getInventory().refresh();
-                    tradeModifiedPartner = false;
                 }
             }
             refreshScreen();
@@ -174,14 +155,13 @@ public class TradeSession {
                     }
                     trader.getInventory().getContainer().add(new Item(traderItemsOffered.get(slot).getId(), item.getAmount()));
                     trader.getInventory().refresh();
-                    partner.getTradeSession().tradeWarning(partner, slot);
-                    trader.getTradeSession().tradeWarning(partner, slot);
+
                     traderItemsOffered.remove(item);
-                    tradeModifiedTrader = true;
                     resetAccept();
                 }
             } else if (pl.equals(partner)) {
-            	Item item = new Item(partnerItemsOffered.get(slot).getId(), amt);
+
+                Item item = new Item(partnerItemsOffered.get(slot).getId(), amt);
                 if (item != null) {
                     if (partnerItemsOffered.getItemCount(item.getId()) < amt) {
                         if (ItemDefinition.forId(item.getId()).isNoted()
@@ -202,9 +182,6 @@ public class TradeSession {
                     partner.getInventory().getContainer().add(new Item(partnerItemsOffered.get(slot).getId(), item.getAmount()));
                     partner.getInventory().refresh();
                     partnerItemsOffered.remove(item);
-                    trader.getTradeSession().tradeWarning(trader, slot);
-                    partner.getTradeSession().tradeWarning(trader, slot);
-                    tradeModifiedPartner = true;
                     resetAccept();
                 }
             }
@@ -227,14 +204,6 @@ public class TradeSession {
         ActionSender.sendBConfig(trader, 697, getPartnersItemsValue());
         ActionSender.sendBConfig(partner, 729, getPartnersItemsValue());
         ActionSender.sendBConfig(partner, 697, getTradersItemsValue());
-		if (partner.getTradeSession().isTradeModifiedPartner()) {
-			ActionSender.sendConfig(trader, 1043, 1);
-			//ActionSender.sendConfig(partner, 1043, 1);
-		}
-		if (trader.getTradeSession().isTradeModifiedTrader()) {
-			//ActionSender.sendConfig(trader, 1043, 1);
-			ActionSender.sendConfig(partner, 1043, 1);
-		}
     }
 
     private int getTradersItemsValue() {
@@ -322,19 +291,10 @@ public class TradeSession {
         traderItemsOffered = partnerItemsOffered = null;
         trader.setTradeSession(null);
         partner.setTradePartner(null);
-        resetTradeWarning(trader);
-        resetTradeWarning(partner);
         ActionSender.sendCloseInterface(trader);
         ActionSender.sendCloseInterface(partner);
         ActionSender.closeInventoryInterface(trader);
         ActionSender.closeInventoryInterface(partner);
-    }
-    
-    public void resetTradeWarning(Player player) {
-		ActionSender.sendConfig(player, 1043, 0);
-		ActionSender.sendConfig(player, 1042, 0);
-		tradeModifiedPartner = false;
-		tradeModifiedTrader = false;
     }
 
     private void giveItems() {

@@ -1,6 +1,7 @@
 package org.dementhium.content;
 
 import org.dementhium.cache.format.CacheNPCDefinition;
+import org.dementhium.content.activity.impl.TutorialIsland;
 import org.dementhium.content.activity.impl.WarriorsGuildMinigame;
 import org.dementhium.content.cutscenes.Cutscene;
 import org.dementhium.content.misc.RepairItem;
@@ -1354,7 +1355,29 @@ public class DialogueManager {
 			}
 			player.sendMessage("Your ring crumbles into dust.");
 			return false;
-			
+		case 650:
+			sendDialogue(player, HAPPY_TALKING, 945, 651, "You have already learned the first thing needed to", "succeed in this world: talking to other people!");
+			return true;
+		case 651:
+			sendDialogue(player, HAPPY_TALKING, 945, 652, "You will find many inhabitants of this world have useful", "things to say to you. By clicking on them with your", "mouse you can talk to them.");
+			return true;
+		case 652:
+			sendDialogue(player, HAPPY_TALKING, 945, 653, "I would also suggest reading through some of the", "supporting information on the website. There you can", "find the Game Guide, which contains all the additional", "information you're ever likely to need. It also contains");
+			return true;
+		case 653:
+			sendDialogue(player, HAPPY_TALKING, 945, 654, "maps and helpful tips to help you on your journey.");
+			return true;
+		case 654:
+			sendDialogue(player, HAPPY_TALKING, 945, 655, "You will notice a flashing tools icon; please click on this", "to continue the tutorial.");
+			return true;
+		case 655:
+			if (player.getActivity() instanceof TutorialIsland){
+				TutorialIsland lol = (TutorialIsland)player.getActivity();
+				lol.nextStage();
+				((TutorialIsland)player.getActivity()).needStageUpdate = true;
+	        	ActionSender.sendChatboxInterface(player, 372);
+			}
+			return false;
 			//579 - 583 Skillcape masters dont use!
 		}
 		return false;
@@ -1414,6 +1437,9 @@ public class DialogueManager {
 			case 3322:
 				sendDialogue(player, HAPPY_TALKING, id, 561, "Hello @PLAYER_NAME@, would you like to see what i've","been cooking?");
 				return true;
+			case 945:
+				sendDialogue(player, HAPPY_TALKING, id, 650, "Greetings! I see you are a new arrival to this land. My", "job is to welcome all new visitors. So, welcome!");
+				return false;
 			case 3167:
 			case 3168:
 			case 3169:

@@ -96,7 +96,7 @@ public class IconManager {
         Icon icon = player.getAttribute("icon_slot" + slot);
         if (icon != null) {
             icon.targetType = 0;
-            //icon.index = -1;
+            /*icon.index = -1;*/
             ActionSender.sendHintIcon(player, icon);
             player.removeAttribute("icon_slot" + slot);
         }

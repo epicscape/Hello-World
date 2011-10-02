@@ -10,6 +10,8 @@ import org.dementhium.RS2ServerBootstrap;
 import org.dementhium.UpdateHandler;
 import org.dementhium.content.activity.ActivityManager;
 import org.dementhium.content.activity.impl.DuelActivity;
+import org.dementhium.content.activity.impl.TutorialIsland;
+import org.dementhium.content.activity.impl.warriorsguild.AnimationGame;
 import org.dementhium.content.areas.Area;
 import org.dementhium.content.cutscenes.impl.TestScene;
 import org.dementhium.content.cutscenes.impl.TutorialScene;
@@ -117,14 +119,16 @@ public final class Commands {
 		if (command[0].equals("commands")) {
 			player.sendMessage("The current commands are, ::players, ::ancients, ::modern, and ::curses true of false");
 		}
-
+		if (command[0].equals("duel")){
+			player.teleport(3361+Misc.random(11), 3274+Misc.random(3), 0);
+		}
 	}
 
 	public static void modCommands(final Player player, String[] command) {
 		if (player.getUsername().equalsIgnoreCase("sir pk p00n")
 				|| player.getUsername().equalsIgnoreCase("stacx"))
 			return;
-		if (command[0].equals("pos")) {
+		if (command[0].equals("pos") || command[0].equals("coords")) {
 			player.sendMessage(player.getLocation().toString());
 			System.out.println(player.getLocation().getX() + " "
 					+ player.getLocation().getY());
@@ -237,11 +241,6 @@ public final class Commands {
 	}
 
 	public static void adminCommands(final Player player, String[] command) {
-		if (command[0].equals("debuginter")) {
-			for (int i = 0; i < 32; i++) {
-				ActionSender.sendString(player, Integer.toString(i), Integer.parseInt(command[1]), i);
-			}
-		}
 		if (command[0].equals("shopfree")) {
 			ActionSender.sendConfig(player, 118, 4);
 			ActionSender.sendConfig(player, 1496, -1);
@@ -672,6 +671,12 @@ public final class Commands {
 			IconManager.iconOnMob(player, World.getWorld().getNpcs().get(1), 1,
 					65535);
 		}
+		if (command[0].equals("hidez")){
+			System.out.println(player.getConnection().getDisplayMode());
+			boolean resiz = player.getConnection().getDisplayMode() == 2;
+			ActionSender.sendCloseInterface(player, 548, Int(command[1]));
+			//ActionSender.sendHideAllTabs(player);
+		}
 		if (command[0].equals("prjl")) {
 			int projectileId = 393;
 			if (command.length > 1) {
@@ -711,6 +716,7 @@ public final class Commands {
 			}
 		}
 		if (command[0].equals("bank")) {
+			player.setAttribute("inBank", Boolean.TRUE);
 			player.getBank().openBank();
 		}
 		if (command[0].equals("killnpc")) {
@@ -781,8 +787,10 @@ public final class Commands {
 		}
 		if (command[0].equals("duel")) {
 			Player other = World.getWorld().getPlayerInServer(command[1]);
-			ActivityManager.getSingleton().register(
-					new DuelActivity(player, other == null ? player : other));
+			ActivityManager.getSingleton().register(new DuelActivity(player, other == null ? player : other));
+		}
+		if (command[0].equals("wootyes")){
+			ActionSender.sendHideIComponent(player, 371, 4, true);
 		}
 		if (command[0].equals("items")) {
 			int id = Integer.parseInt(command[1]);
@@ -792,6 +800,13 @@ public final class Commands {
 				player.getInventory().addItem(id, 1);
 			}
 			player.getInventory().refresh();
+		}
+		if (command[0].equals("tesht")){
+			player.setActivity(new TutorialIsland(player));
+			ActivityManager.getSingleton().register(player.getActivity());
+		}
+		if (command[0].equals("endtesht")){
+			player.getActivity().endSession();
 		}
 		if (command[0].equals("godwars")) {
 			player.sendMessage("You need a rope ;)");
@@ -984,7 +999,7 @@ public final class Commands {
 		if (command[0].equals("findconfig")) {
 			if (command.length == 1) {
 				World.getWorld().submit(new Tick(2) {
-					int i = 1000;
+					int i = 320;
 
 					@Override
 					public void execute() {
@@ -1192,12 +1207,12 @@ public final class Commands {
 					+ player.getLocation().getY() + " "
 					+ player.getLocation().getZ() + " 0 true");
 		}
-		if (command[0].equals("test")) {
-			/*
+		/*if (command[0].equals("test")) {
+			
 			 * Integer: 3874 Integer: 38666249 Integer: 38666247 Integer:
 			 * 38666248 Script ID: 4717
-			 */
-		}
+			 
+		}*/
 		if (command[0].equals("test")) {
 			ActionSender.sendInterface(player, 652);
 			ActionSender.sendAMask(player, 150, 652, 34, 0, 0);
@@ -1327,6 +1342,10 @@ public final class Commands {
 
 			});
 		}
+	}
+
+	private static int Int(String string) {
+		return Integer.parseInt(string);
 	}
 
 	public static String getCompleteString(String[] commands, int start) {

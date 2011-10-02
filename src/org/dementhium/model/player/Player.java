@@ -98,12 +98,6 @@ public final class Player extends Mob {
 	private final SkullManager skullManager = new SkullManager(this);
 
 	/**
-	 * Dueling Shit.
-	 */
-	public boolean isStaking;
-	public boolean isFriendly;
-	
-	/**
 	 * The quest storage used.
 	 */
 	private final QuestStorage questStorage = new QuestStorage();
@@ -136,6 +130,8 @@ public final class Player extends Mob {
 	private static int[] emptyLot = RegionBuilder.findEmptyMap(40, 40); // 16x16
 	private final static Location houseLocation = Location.locate(emptyLot[0],
 			emptyLot[1], 0);
+	
+	private int tutorialStage = 0;
 
 	public Location getHouseLocation() {
 		return houseLocation;

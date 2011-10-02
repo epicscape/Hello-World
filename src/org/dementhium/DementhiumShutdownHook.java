@@ -7,7 +7,7 @@ import org.dementhium.model.player.Player;
 
 
 /**
- * Our shutdown hook.LOL
+ * Our shutdown hook.
  *
  * @author Emperor
  */

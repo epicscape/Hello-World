@@ -180,6 +180,7 @@ public class ActionButtonHandler extends PacketHandler {
 			break;
 		case 763:
 			if (buttonId == 0) {
+				System.out.println("duh"+packet.getOpcode());
 				switch (packet.getOpcode()) {
 				case 6:
 					player.getBank().addItem(slot, 1);
@@ -215,6 +216,7 @@ public class ActionButtonHandler extends PacketHandler {
 			}
 			break;
 		case 762:
+			System.out.println("BAnk");
 			if (buttonId >= 44 && buttonId <= 62) {
 				player.setAttribute("currentTab", Bank.getArrayIndex(buttonId));
 			}
@@ -417,6 +419,7 @@ public class ActionButtonHandler extends PacketHandler {
 					break;
 				case 48:
 					if (player.getAttribute("fromBank") != null) {
+						player.setAttribute("inBank", Boolean.TRUE);
 						player.getBank().openBank();
 						player.removeAttribute("fromBank");
 					}
