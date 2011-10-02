@@ -19,6 +19,8 @@ public class TradeSession {
     private TradeState currentState = TradeState.STATE_ONE;
     private Container traderItemsOffered = new Container(28, false);
     private Container partnerItemsOffered = new Container(28, false);
+    private Container traderItemsLoaned = new Container(28, false);
+    private Container partnerItemsLoaned = new Container(28, false);
     private boolean traderDidAccept, partnerDidAccept;
     private boolean tradeModifiedPartner;
     private boolean tradeModifiedTrader;
@@ -31,8 +33,11 @@ public class TradeSession {
       */
 
 	public void tradeWarning(Player player, int slot) {
-		Object[] opt = new Object[]{slot, 7, 4, 21954593};
+		//Object[] opt = new Object[]{slot, 7, 4, 21954593, 143};
+		Object[] opt = new Object[]{slot, 7, 4, 335 << 16 | 38};//33 is working number
 		ActionSender.sendClientScript(player, 143, opt, "Iiii");
+		System.out.println(21954593 >> 16);
+		System.out.println(21954593 & 0xffff);
 	}
 	
     public TradeSession(Player trader, Player partner) {
@@ -58,6 +63,8 @@ public class TradeSession {
         ActionSender.sendInventoryInterface(p, 336);
         ActionSender.sendItems(p, 90, traderItemsOffered, false);
         ActionSender.sendItems(p, 90, partnerItemsOffered, true);
+        ActionSender.sendItems(p, 541, traderItemsLoaned, false);
+        ActionSender.sendItems(p, 541, partnerItemsLoaned, true);
         ActionSender.sendString(p, "", 335, 37);
         String name = trader.getUsername();
         String name1 = partner.getUsername();
@@ -84,6 +91,74 @@ public class TradeSession {
 		return tradeModifiedTrader;
 	}
 
+    public void lendItem(Player pl, int slot, int amt) {
+        if (currentState.equals(TradeState.STATE_ONE)) {
+            if (pl.equals(trader)) {
+                //ActionSender.sendItems(pl, 541, pl.getInventory().getContainer(), false);
+                if (pl.getInventory().getContainer().get(slot) == null) {
+                    return;
+                }
+                Item item = new Item(pl.getInventory().getContainer().get(slot).getId(), amt);
+                if (item != null) {
+                    if (pl.getRights() != 2 && !item.getDefinition().isTradeable() && item.getId() != 995) {
+                        pl.sendMessage("You cannot trade this item!");
+                        return;
+                    }
+                    if (pl.getInventory().getContainer().getItemCount(item.getId()) < amt) {
+                        if (ItemDefinition.forId(item.getId()).isNoted()
+                                || ItemDefinition.forId(item.getId()).isStackable()) {
+                            amt = pl.getInventory().lookup(item.getId()).getAmount();
+                        } else {
+                            amt = pl.getInventory().getContainer().getItemCount(item.getId());
+                        }
+                        item.setAmount(amt);
+
+                    }
+                    if (0 >= amt) {
+                        return;
+                    }
+                    if (traderItemsLoaned.getFreeSlots() < amt && !pl.getInventory().getContainer().get(slot).getDefinition().isNoted() && !pl.getInventory().getContainer().get(slot).getDefinition().isStackable()) {
+                        item.setAmount(traderItemsLoaned.getFreeSlots());
+                    }
+                    traderItemsLoaned.add(item);
+                    pl.getInventory().getContainer().remove(new Item(pl.getInventory().getContainer().get(slot).getId(), amt));
+                    pl.getInventory().refresh();
+                    tradeModifiedTrader = false;
+                }
+            } else if (pl.equals(partner)) {
+                Item inventoryItem = pl.getInventory().getContainer().get(slot);
+                Item item = inventoryItem != null ? new Item(inventoryItem.getId(), amt) : null;
+                if (item != null) {
+                    if (!item.getDefinition().isTradeable() && item.getId() != 995 && pl.getRights() != 2) {
+                        pl.sendMessage("You cannot trade this item!");
+                        return;
+                    }
+                    if (pl.getInventory().getContainer().getItemCount(item.getId()) < amt) {
+                        if (ItemDefinition.forId(item.getId()).isNoted()
+                                || ItemDefinition.forId(item.getId()).isStackable()) {
+                            amt = pl.getInventory().lookup(item.getId()).getAmount();
+                        } else {
+                            amt = pl.getInventory().getContainer().getItemCount(item.getId());
+                        }
+                        item.setAmount(amt);
+
+                    }
+                    if (0 >= amt) {
+                        return;
+                    }
+                    if (partnerItemsLoaned.getFreeSlots() < amt && !pl.getInventory().getContainer().get(slot).getDefinition().isNoted() && !pl.getInventory().getContainer().get(slot).getDefinition().isStackable()) {
+                        item.setAmount(partnerItemsLoaned.getFreeSlots());
+                    }
+                    partnerItemsLoaned.add(item);
+                    pl.getInventory().getContainer().remove(item);
+                    pl.getInventory().refresh();
+                    tradeModifiedTrader = false;
+                }
+            }
+            refreshScreen();
+        }
+    }
+    
     public void offerItem(Player pl, int slot, int amt) {
         if (currentState.equals(TradeState.STATE_ONE)) {
             if (pl.equals(trader)) {
@@ -144,7 +219,7 @@ public class TradeSession {
                     partnerItemsOffered.add(item);
                     pl.getInventory().getContainer().remove(item);
                     pl.getInventory().refresh();
-                    tradeModifiedPartner = false;
+                    tradeModifiedTrader = false;
                 }
             }
             refreshScreen();
@@ -172,10 +247,11 @@ public class TradeSession {
                     if (pl.getInventory().getFreeSlots() < amt && !traderItemsOffered.get(slot).getDefinition().isNoted() && !traderItemsOffered.get(slot).getDefinition().isStackable()) {
                         item.setAmount(pl.getInventory().getFreeSlots());
                     }
+                    partner.getTradeSession().tradeWarning(partner, slot);
+                    trader.getTradeSession().tradeWarning(trader, slot);
                     trader.getInventory().getContainer().add(new Item(traderItemsOffered.get(slot).getId(), item.getAmount()));
                     trader.getInventory().refresh();
-                    partner.getTradeSession().tradeWarning(partner, slot);
-                    trader.getTradeSession().tradeWarning(partner, slot);
+                    refreshScreen();
                     traderItemsOffered.remove(item);
                     tradeModifiedTrader = true;
                     resetAccept();
@@ -199,11 +275,12 @@ public class TradeSession {
                     if (pl.getInventory().getFreeSlots() < amt && !partnerItemsOffered.get(slot).getDefinition().isNoted() && !partnerItemsOffered.get(slot).getDefinition().isStackable()) {
                         item.setAmount(pl.getInventory().getFreeSlots());
                     }
+                    trader.getTradeSession().tradeWarning(trader, slot);
+                    partner.getTradeSession().tradeWarning(partner, slot);
                     partner.getInventory().getContainer().add(new Item(partnerItemsOffered.get(slot).getId(), item.getAmount()));
                     partner.getInventory().refresh();
+                    refreshScreen();
                     partnerItemsOffered.remove(item);
-                    trader.getTradeSession().tradeWarning(trader, slot);
-                    partner.getTradeSession().tradeWarning(trader, slot);
                     tradeModifiedPartner = true;
                     resetAccept();
                 }
@@ -217,6 +294,10 @@ public class TradeSession {
         ActionSender.sendItems(partner, 90, partnerItemsOffered, false);
         ActionSender.sendItems(trader, 90, partnerItemsOffered, true);
         ActionSender.sendItems(partner, 90, traderItemsOffered, true);
+        ActionSender.sendItems(trader, 541, traderItemsLoaned, false);
+        ActionSender.sendItems(partner, 541, partnerItemsLoaned, false);
+        ActionSender.sendItems(trader, 541, partnerItemsLoaned, true);
+        ActionSender.sendItems(partner, 541, traderItemsLoaned, true);
         String name = trader.getUsername();
         ActionSender.sendString(partner, Misc.formatPlayerNameForDisplay(name), 335, 22);
         String name1 = partner.getUsername();
@@ -229,15 +310,15 @@ public class TradeSession {
         ActionSender.sendBConfig(partner, 697, getTradersItemsValue());
 		if (partner.getTradeSession().isTradeModifiedPartner()) {
 			ActionSender.sendConfig(trader, 1043, 1);
-			//ActionSender.sendConfig(partner, 1043, 1);
+			ActionSender.sendConfig(partner, 1042, 1);
 		}
 		if (trader.getTradeSession().isTradeModifiedTrader()) {
-			//ActionSender.sendConfig(trader, 1043, 1);
+			ActionSender.sendConfig(trader, 1042, 1);
 			ActionSender.sendConfig(partner, 1043, 1);
 		}
     }
 
-    private int getTradersItemsValue() {
+    public int getTradersItemsValue() {
         int initialPrice = 0;
         for (Item item : traderItemsOffered.toArray()) {
             if (item != null) {
@@ -247,7 +328,7 @@ public class TradeSession {
         return initialPrice;
     }
 
-    private int getPartnersItemsValue() {
+    public int getPartnersItemsValue() {
         int initialPrice = 0;
         for (Item item : partnerItemsOffered.toArray()) {
             if (item != null) {
@@ -288,7 +369,6 @@ public class TradeSession {
                     }
                 }
                 break;
-
             case STATE_TWO:
                 if (pl.equals(trader)) {
                     if (partnerDidAccept && traderDidAccept) {
@@ -313,6 +393,8 @@ public class TradeSession {
     public void tradeFailed() {
         trader.getInventory().getContainer().addAll(traderItemsOffered);
         partner.getInventory().getContainer().addAll(partnerItemsOffered);
+        //trader.getInventory().getContainer().addAll(traderItemsLoaned);
+        //partner.getInventory().getContainer().addAll(partnerItemsLoaned);
         endSession();
         trader.getInventory().refresh();
         partner.getInventory().refresh();
@@ -367,6 +449,10 @@ public class TradeSession {
 
     public Container getPlayerItemsOffered(Player p) {
         return (p.equals(trader) ? traderItemsOffered : partnerItemsOffered);
+    }
+    
+    public Container getPlayerItemsLoaned(Player p) {
+        return (p.equals(trader) ? traderItemsLoaned : partnerItemsLoaned);
     }
 
     public enum TradeState {

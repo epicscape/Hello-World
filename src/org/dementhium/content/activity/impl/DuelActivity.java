@@ -109,7 +109,7 @@ public class DuelActivity extends Activity<Player> {
             this.stop();
             return false;
         }
-        if (player.setAttribute("isStaking", Boolean.TRUE)) {
+        if (player.isStaking == true && player.isFriendly != false) {
 	        duelConfigurations = new DuelConfigurations();
 	        getPlayer().setActivity(this);
 	        otherPlayer.setActivity(this);
@@ -135,10 +135,8 @@ public class DuelActivity extends Activity<Player> {
 	        ((Stakes) otherPlayer.getAttribute("duelStakes")).refresh();
 	        setCurrentState(State.FIRST_SCREEN);
 	        setActivityState(SessionStates.PAUSE_STATE);
-	        return false;
-        //Started on "Friendly" dueling
-         } else {
-        	 if (player.setAttribute("isFriendly", Boolean.TRUE)) {
+        } else{
+        	if (player.isFriendly == true && player.isStaking != false) {
         		duelConfigurations = new DuelConfigurations();
     	        getPlayer().setActivity(this);
     	        otherPlayer.setActivity(this);
@@ -161,8 +159,9 @@ public class DuelActivity extends Activity<Player> {
     	        setCurrentState(State.FIRST_FRIENDLY_SCREEN);
     	        setActivityState(SessionStates.PAUSE_STATE);
     	        return false;
-        	}
-        }
+        	 }
+         }
+		return false;
     }
 
     @Override

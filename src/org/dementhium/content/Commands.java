@@ -237,7 +237,7 @@ public final class Commands {
 	}
 
 	public static void adminCommands(final Player player, String[] command) {
-		if (command[0].equals("debuginter")) {
+		if (command[0].equals("showstrings")) {
 			for (int i = 0; i < 32; i++) {
 				ActionSender.sendString(player, Integer.toString(i), Integer.parseInt(command[1]), i);
 			}

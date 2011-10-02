@@ -28,6 +28,7 @@ import org.dementhium.util.InputHandler;
 import org.dementhium.util.InterfaceSettings;
 import org.dementhium.util.Misc;
 
+
 /**
  * @author 'Mystic Flow
  * @author `Discardedx2
@@ -80,12 +81,11 @@ public class ActionButtonHandler extends PacketHandler {
 		int buttonId = packet.readShort();
 		int slot = packet.readLEShortA();
 		int itemId = packet.readShort();
-		System.out.println("Packety "+interfaceId+","+buttonId+","+slot+","+itemId);
+		System.out.println("Packety "+interfaceId+","+buttonId+","+slot+","+itemId+","+packet.getOpcode());
 		if (slot == 65535) {
 			slot = -1;
 		}
-		System.out.println("interfaceId=" + interfaceId + " buttonId="
-				+ buttonId + " slot=" + slot + " itemId=" + itemId);
+		System.out.println("interfaceId=" + interfaceId + " buttonId=" + buttonId + " slot=" + slot + " itemId=" + itemId + "PacketID" +packet.getOpcode());
 		if (eventManager.handleInterfaceOption(player, interfaceId, buttonId,
 				slot, itemId, packet.getOpcode())) {
 			return;
@@ -144,12 +144,10 @@ public class ActionButtonHandler extends PacketHandler {
 		case 749:
 			switch (packet.getOpcode()) {
 			case 6:
-				// player.getPrayer().switchQuickPrayers();
-				player.sendMessage("Quick prayers are disabled for now.");
+				player.getPrayer().switchQuickPrayers();
 				break;
 			case 13:
-				// player.getPrayer().switchSettingQuickPrayer();
-				player.sendMessage("Quick prayers are disabled for now.");
+				player.getPrayer().switchSettingQuickPrayer();
 				break;
 			}
 			break;
@@ -626,7 +624,12 @@ public class ActionButtonHandler extends PacketHandler {
 					player.getTradeSession().acceptPressed(player);
 				}
 				break;
-
+			/*case 34:
+				
+				ActionSender.sendMessage(player, item.getDefinition().getExchangePrice()
+						+ " is worth "
+						+ item.getDefinition().getExchangePrice());
+				break;*/
 			case 31:
 				if (player.getTradeSession() != null) {
 					switch (packet.getOpcode()) {// 6. 13. 15. 67. 58
@@ -713,17 +716,26 @@ public class ActionButtonHandler extends PacketHandler {
 					player.getTradeSession().offerItem(player, slot, 10);
 					break;
 				case 15:
-					player.getTradeSession().offerItem(
-							player,
-							slot,
-							player.getInventory().numberOf(
-									player.getInventory().get(slot).getId()));
+					player.getTradeSession().offerItem(player, slot, player.getInventory().numberOf(player.getInventory().get(slot).getId()));
 					break;
+				/*case 67: TODO(Value Item In Inveotry)
+					player.sendMessage(player.getTradeSession()
+							.getPlayerItemsOffered(player).get(slot)
+							.getDefinition().getName()
+							+ " is worth "
+							+ player.getTradeSession()
+									.getPlayerItemsOffered(player)
+									.get(slot).getDefinition()
+								.getExchangePrice());
+				break;*/
 				case 46:
 					InputHandler.requestIntegerInput(player, 2,
 							"Please enter an amount:");
 					player.setAttribute("inputId", 1);
 					player.setAttribute("slotId", slot);
+					break;
+				case 82:
+					player.getTradeSession().lendItem(player, slot, 1);
 					break;
 				case 58:
 					ActionSender.sendMessage(

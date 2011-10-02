@@ -24,7 +24,7 @@ public class ClanPacket {
                 bldr.writeRS2String(Misc.formatPlayerNameForDisplay(pl.getUsername()));
                 bldr.writeShort(1); // idk tbh ;s
                 bldr.writeByte(clan.getRank(pl));
-                bldr.writeRS2String(pl.getConnection().isInLobby() ? "Lobby" : "Dementhium");
+                bldr.writeRS2String(pl.getConnection().isInLobby() ? "Lobby" : "EpicScape");
             }
         }
         p.write(bldr.toMessage());
