@@ -41,7 +41,7 @@ public abstract class Activity<E extends Entity> extends Tick {
     /**
      * The player.
      */
-    private final Player player;
+    protected final Player player;
 
     /**
      * A {@link List} containing all the other players in this minigame/activity session.

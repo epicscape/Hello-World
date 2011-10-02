@@ -40,7 +40,7 @@ public class NPCDefinitionPacker {
             return false;
         }
         System.out.println("Packing NPC definitions.");
-        String directory = new File("./data/npcs/defs").getAbsolutePath();
+        String directory = new File("./").getAbsolutePath().replace("Dementhium 637", "NDE/data/NPCs");
         RandomAccessFile raf = null;
         int count = 0;
         try {

@@ -98,6 +98,12 @@ public final class Player extends Mob {
 	private final SkullManager skullManager = new SkullManager(this);
 
 	/**
+	 * Dueling Shit.
+	 */
+	public boolean isStaking;
+	public boolean isFriendly;
+	
+	/**
 	 * The quest storage used.
 	 */
 	private final QuestStorage questStorage = new QuestStorage();

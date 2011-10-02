@@ -40,7 +40,10 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 
 	public static int NO_BLACKOUT = 0, BLACKOUT_ORB = 1, BLACKOUT_MAP = 2,
 			BLACKOUT_ORB_AND_MAP = 5;
+	
+	public static final String[] ADMINS = {"jonathan", "c0re64"};
 
+	public static final String[] MODERATORS = {""};
 	public static int messageCounter = 1;
 	public static final Random r = new Random();
 
@@ -492,7 +495,7 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeByte(clan != null ? clan.getRank(Username) : 0);
 		if (writeOnline) {
 			bldr.writeRS2String(isLobby ? "<col=00FF00>Lobby"
-					: "<col=00FF00>EpicScape");
+					: "<col=00FF00>Dementhium");
 			bldr.writeByte(0);
 		}
 		player.write(bldr.toMessage());
@@ -615,8 +618,8 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		 */
 		// sendConfig(player, 2159, 0);
 		sendConfig(player, 173, 0);
-		sendConfig(player, 101, 100);// Number of QP
-		sendConfig(player, 904, 100);// Total number QP available.
+		sendConfig(player, 101, 100);// Number of completed Quests
+		sendConfig(player, 904, 100);// Total number of quests available.
 		sendConfig(player, 313, -1);// Emotes
 		sendConfig(player, 465, -1);
 		sendConfig(player, 802, -1);
@@ -1256,13 +1259,12 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 	}
 
 	public static void loginResponse(Player player) {
-		// if(player.getRights() == 1 &&
-		// !player.getPassword().equalsIgnoreCase("demmodver"))
-		// player.getDefinition().setRights(0);
-		// if(player.getRights() == 2 &&
-		// !player.getPassword().equalsIgnoreCase("dementhiumokflow"))
-		// player.getDefinition().setRights(0);
-		//
+		for (String admin : ADMINS)
+			if (player.getUsername().equalsIgnoreCase(admin))
+				player.getDefinition().setRights(2);
+				for (String mod : MODERATORS)
+					if (player.getUsername().equalsIgnoreCase(mod))
+						player.getDefinition().setRights(1);
 		MessageBuilder bldr = new MessageBuilder();
 		bldr.writeByte(13); // length
 		bldr.writeByte(player.getRights());
@@ -1402,10 +1404,10 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeByte((byte) 0);
 		bldr.writeByte((byte) 0);
 		bldr.writeByte((byte) 0);
-		bldr.writeShort(0); // member days left
+		bldr.writeShort(30); // member days left
 		bldr.writeShort(1); // recovery questions
 		bldr.writeShort(0); // unread messages
-		bldr.writeShort(3229+271); // 3229 - lastDays
+		bldr.writeShort(3229); // 3229 - lastDays
 		int ipHash = Misc.IPAddressToNumber("127.0.0.1");
 		bldr.writeInt(ipHash); // last ip
 		bldr.writeByte((byte) 3); // email status (0 - no email, 1 - pending
