@@ -60,7 +60,6 @@ public class PlayerOption extends PacketHandler {
                         ActionSender.sendInterface(player, 640);
                         ActionSender.sendConfig(player, 283, 67108864);
                         player.setAttribute("isStaking", Boolean.FALSE);
-                        player.setAttribute("isFriendly", Boolean.FALSE);
                         player.setAttribute("duelWithIndex", other.getIndex());
                     }
                 }

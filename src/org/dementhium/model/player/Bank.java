@@ -23,6 +23,7 @@ public class Bank {
 			player.getTradeSession().tradeFailed();
 		}
 		if (player.getAttribute("cantMove") == Boolean.TRUE) {
+			System.out.println("no mobve");
             return;
         }
 		checkingBank = false;
@@ -84,6 +85,7 @@ public class Bank {
 
 	public void addItem(int slot, int amount) {
 		if (checkingBank) {
+			System.out.println("huhy");
 			return;
 		}
 		addItem(slot, amount, true);
@@ -93,7 +95,9 @@ public class Bank {
 		if (checkingBank) {
 			return;
 		}
-		if (player.getAttribute("inBank", Boolean.FALSE) == Boolean.TRUE) {
+		System.out.println("huh");
+		if (player.getAttribute("inBank", Boolean.TRUE) == Boolean.TRUE) { //TODO: SAFETY
+			System.out.println("nu");
 			ActionSender.sendCloseChatBox(player);
 			Item item = player.getInventory().get(slot);
 			if (item == null) {
@@ -136,6 +140,8 @@ public class Bank {
 			if (refresh) {
 				refresh();
 			}
+		} else {
+			System.out.println("wtf..");
 		}
 	}
 
@@ -150,7 +156,7 @@ public class Bank {
 		if (checkingBank) {
 			return;
 		}
-		if (player.getAttribute("inBank", Boolean.FALSE) == Boolean.TRUE) {
+		if (player.getAttribute("inBank", Boolean.TRUE) == Boolean.TRUE) { //TODO: SAFETY
 			ActionSender.sendCloseChatBox(player);
 			if (slot < 0 || slot > Bank.SIZE || amount <= 0) {
 				return;

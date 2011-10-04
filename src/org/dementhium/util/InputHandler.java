@@ -15,6 +15,7 @@ import org.dementhium.net.ActionSender;
 public class InputHandler {
 
     public static void handleStringInput(Player player, String string) {
+    	Player p2 = player.getTradeSession().getPartner();
         int inputId = (Integer) player.getAttribute("inputId", -1);
         if (inputId > -1) {
             switch (inputId) {
@@ -31,8 +32,18 @@ public class InputHandler {
                         player.removeAttribute("noteSlot");
                     }
                     break;
-            }
-        }
+                case 2: //enter loan time
+                	String timer = string.replaceAll("_", " ");   
+                    //if (timer > 24) {
+                    //	player.sendMessage("You can only lend an item for 24 hours at a time.");
+                    //} else {
+                    	ActionSender.sendString(player, timer+" hours", 335, 57);
+                    	ActionSender.sendString(p2, timer+" hours", 335, 53);
+                    	player.sendMessage("You are lending an item for "+timer+" hours.");
+                    	break;
+                    //}
+            	}
+        	}
         resetInput(player);
     }
 
@@ -136,6 +147,10 @@ public class InputHandler {
                         player.getPriceCheck().remove(itemId, slot, value);
                     }
                 	break;
+				case 8:
+					player.loanTimer = value;
+					System.out.println("Value ="+value);
+					break;
             }
         }
         player.setAttribute("slotId", 0);

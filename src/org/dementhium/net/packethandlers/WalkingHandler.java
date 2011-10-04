@@ -1,5 +1,6 @@
 package org.dementhium.net.packethandlers;
 
+import org.dementhium.content.activity.impl.TutorialIsland;
 import org.dementhium.model.Mob;
 import org.dementhium.model.World;
 import org.dementhium.model.map.path.DefaultPathFinder;
@@ -71,7 +72,13 @@ public class WalkingHandler extends PacketHandler {
             World.getWorld().getShopManager().getShop(player.getAttribute("shopId", -1)).removePlayer(player);
             player.removeAttribute("shopId");
         }
-        ActionSender.sendCloseChatBox(player);
+        if (player.getAttribute("inTutorial", false) == false)
+        	ActionSender.sendCloseChatBox(player);
+        else {
+        	((TutorialIsland)player.getActivity()).needStageUpdate = true;
+        	((TutorialIsland)player.getActivity()).updateSession();
+        	ActionSender.sendChatboxInterface(player, 372);
+        }
         ActionSender.closeInventoryInterface(player);
         ActionSender.sendCloseInterface(player);
         player.getActionManager().stopAction();

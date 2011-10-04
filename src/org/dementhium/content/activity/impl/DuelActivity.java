@@ -29,19 +29,9 @@ public class DuelActivity extends Activity<Player> {
      * @author Emperor
      */
     public static enum State {
-        FIRST_SCREEN, SECOND_SCREEN, FIGHTING, FIRST_FRIENDLY_SCREEN, SECOND_FRIEDNLY_SCREEN
+        FIRST_SCREEN, SECOND_SCREEN, FIGHTING
     }
-    
-    /**
-     * The duel rules friendly interface id.
-     */
-    public static final short DUEL_RULES_FRIENDLY_INTERFACE = 637;
 
-    /**
-     * The second duel friendly interface id.
-     */
-    public static final short DUEL_SECOND_FRIENDLY_INTERFACE = 639;
-    
     /**
      * The duel rules interface id.
      */
@@ -109,18 +99,16 @@ public class DuelActivity extends Activity<Player> {
             this.stop();
             return false;
         }
-        if (player.isStaking == true && player.isFriendly != false) {
+        //if (player.isStaking == true && player.isFriendly != false) {
 	        duelConfigurations = new DuelConfigurations();
 	        getPlayer().setActivity(this);
 	        otherPlayer.setActivity(this);
 	        ActionSender.sendConfig(getPlayer(), 286, 0);
 	        ActionSender.sendConfig(otherPlayer, 286, 0);
-	        ActionSender.sendString(getPlayer(), "", 631, 28);
+	        ActionSender.sendString(getOtherPlayer(), "", 631, 28);
 	        ActionSender.sendString(otherPlayer, "", 631, 28);
-	        String name = getPlayer().getUsername();
-	        String name1 = otherPlayer.getUsername();
-	        ActionSender.sendString(getPlayer(), 631, 23, "" + Misc.formatPlayerNameForDisplay(name1));
-	        ActionSender.sendString(otherPlayer, 631, 23, "" + Misc.formatPlayerNameForDisplay(name));
+	        ActionSender.sendString(getPlayer(), "" + Misc.formatPlayerNameForDisplay(otherPlayer.getUsername()), 631, 23);
+	        ActionSender.sendString(otherPlayer, "" + Misc.formatPlayerNameForDisplay(getPlayer().getUsername()), 631, 23);
 	        ActionSender.sendString(getPlayer(), "" + otherPlayer.getSkills().getCombatLevel(), 631, 25);
 	        ActionSender.sendString(otherPlayer, "" + getPlayer().getSkills().getCombatLevel(), 631, 25);
 	        ActionSender.sendInventoryInterface(getPlayer(), 628);
@@ -135,7 +123,8 @@ public class DuelActivity extends Activity<Player> {
 	        ((Stakes) otherPlayer.getAttribute("duelStakes")).refresh();
 	        setCurrentState(State.FIRST_SCREEN);
 	        setActivityState(SessionStates.PAUSE_STATE);
-        } else{
+	        return false;
+        /*} else{
         	if (player.isFriendly == true && player.isStaking != false) {
         		duelConfigurations = new DuelConfigurations();
     	        getPlayer().setActivity(this);
@@ -158,10 +147,9 @@ public class DuelActivity extends Activity<Player> {
     	        ActionSender.sendInterface(otherPlayer, DUEL_RULES_FRIENDLY_INTERFACE);
     	        setCurrentState(State.FIRST_FRIENDLY_SCREEN);
     	        setActivityState(SessionStates.PAUSE_STATE);
-    	        return false;
-        	 }
-         }
-		return false;
+    	        return false;*/
+        	// }
+        // }
     }
 
     @Override
@@ -198,9 +186,9 @@ public class DuelActivity extends Activity<Player> {
                 if (count == 0) {
                     getPlayer().getMask().setForceText(new ForceText("FIGHT!"));
                     otherPlayer.getMask().setForceText(new ForceText("FIGHT!"));
+                    this.stop();
                     getPlayer().removeAttribute("cantMove");
                     otherPlayer.removeAttribute("cantMove");
-                    this.stop();
                     commenced = true;
                     return;
                 }
@@ -220,6 +208,8 @@ public class DuelActivity extends Activity<Player> {
         if (finished || getPlayer().getActivity() != this || otherPlayer.getActivity() != this) {
             return true;
         }
+        IconManager.removeIcon(getPlayer(), otherPlayer);
+        IconManager.removeIcon(otherPlayer, getPlayer());
         finished = true;
         if (getPlayer().getAttribute("duellingForfeit") == Boolean.TRUE) {
             otherPlayer.setAttribute("hasWonDuel", true);
@@ -228,16 +218,14 @@ public class DuelActivity extends Activity<Player> {
             otherPlayer.setAttribute("hasWonDuel", false);
             getPlayer().setAttribute("hasWonDuel", true);
         }
-        ActionSender.sendPlayerOption(getPlayer(), "Challenge", 1, false);
-        ActionSender.sendPlayerOption(otherPlayer, "Challenge", 1, false);
+        /*ActionSender.sendPlayerOption(getPlayer(), "Challenge", 1, false);
+        ActionSender.sendPlayerOption(otherPlayer, "Challenge", 1, false);*/
         DuelConfigurations.teleport(getPlayer(), TeleportLocations.CHALLENGE_ROOM, false);
         DuelConfigurations.teleport(otherPlayer, TeleportLocations.CHALLENGE_ROOM, false);
         getPlayer().setAttribute("duelingWith", null);
         otherPlayer.setAttribute("duelingWith", null);
-        IconManager.removeIcon(getPlayer(), otherPlayer);
-        IconManager.removeIcon(otherPlayer, getPlayer());
-        getPlayer().setAttribute("isStaking", Boolean.FALSE);
-        otherPlayer.setAttribute("isStaking", Boolean.FALSE);
+        getPlayer().setAttribute("didRequestDuel", Boolean.FALSE);
+        otherPlayer.setAttribute("didRequestDuel", Boolean.FALSE);
         final Container spoils = (getPlayer().getAttribute("hasWonDuel") == Boolean.TRUE ?
                 ((Stakes) otherPlayer.getAttribute("duelStakes")).getContainer() :
                 ((Stakes) getPlayer().getAttribute("duelStakes")).getContainer());
@@ -261,8 +249,6 @@ public class DuelActivity extends Activity<Player> {
                 }
                 getPlayer().setActivity(Mob.DEFAULT_ACTIVITY);
                 otherPlayer.setActivity(Mob.DEFAULT_ACTIVITY);
-                getPlayer().setAttribute("isStaking", Boolean.FALSE);
-                otherPlayer.setAttribute("isStaking", Boolean.FALSE);
                 stop();
                 DuelActivity.this.stop(false); //Incase the endSession() method gets called in the SessionLogoutTask.
             }
@@ -284,8 +270,6 @@ public class DuelActivity extends Activity<Player> {
         }
         DuelConfigurations.teleport(getPlayer(), TeleportLocations.CHALLENGE_ROOM, false);
         player.setActivity(Mob.DEFAULT_ACTIVITY);
-        getPlayer().setAttribute("isStaking", Boolean.FALSE);
-        otherPlayer.setAttribute("isStaking", Boolean.FALSE);
         return true;
     }
 
@@ -381,8 +365,6 @@ public class DuelActivity extends Activity<Player> {
         reset(player, other);
         player.setActivity(Mob.DEFAULT_ACTIVITY);
         other.setActivity(Mob.DEFAULT_ACTIVITY);
-        getPlayer().setAttribute("isStaking", Boolean.FALSE);
-        otherPlayer.setAttribute("isStaking", Boolean.FALSE);
         player.sendMessage("You've declined the duel.");
         other.sendMessage("Other player has declined the duel.");
         stop(false);
@@ -405,8 +387,8 @@ public class DuelActivity extends Activity<Player> {
         other.setAttribute("acceptedDuel", false);
         player.setAttribute("duellingForfeit", false);
         other.setAttribute("duellingForfeit", false);
-        getPlayer().setAttribute("isStaking", Boolean.FALSE);
-        otherPlayer.setAttribute("isStaking", Boolean.FALSE);
+        player.setAttribute("didRequestDuel", Boolean.FALSE);
+        other.setAttribute("didRequestDuel", Boolean.FALSE);
         return true;
     }
 

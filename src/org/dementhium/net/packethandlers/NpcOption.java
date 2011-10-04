@@ -282,6 +282,7 @@ public class NpcOption extends PacketHandler {
 						player.getBonuses().refreshEquipScreen();
 						ActionSender.sendInterface(player, 667);
 					} else {
+						player.setAttribute("inBank", Boolean.TRUE);
 						player.getBank().openBank();
 						player.removeAttribute("fromBank");
 					}
@@ -400,6 +401,7 @@ public class NpcOption extends PacketHandler {
 						player.getBonuses().refreshEquipScreen();
 						ActionSender.sendInterface(player, 667);
 					} else {
+						player.setAttribute("inBank", Boolean.TRUE);
 						player.getBank().openBank();
 						player.removeAttribute("fromBank");
 					}

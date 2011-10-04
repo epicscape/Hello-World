@@ -42,7 +42,6 @@ public final class HandshakeDecoder extends FrameDecoder {
 		case HandshakeConstants.LOGIN_REQUEST:
 			ctx.getPipeline().addBefore("handler", "decoder", new RS2LoginDecoder());
 			response.writeByte((byte) 0);
-			//response.writeLong(serverKeyGenerator.nextLong()); //TODO Shouldn't be here.
 			break;
 		}
 		return new HandshakeMessage(opcode, response.toMessage());

@@ -40,7 +40,7 @@ public class NPCConverter {
     public static void main(String[] args, ArrayList<NPCDefinition> defs) {
         Cache.init();
 		defsToConvert = defs;//XMLHandler.fromXML("./data/npcs/npcDefinitions.xml");
-		convert();
+		//convert();
 
     }
 

@@ -23,27 +23,34 @@ public class AutoSinger {
 
     public AutoSinger() {
         try {
-            new Scanner(System.in).nextLine();
             robot = new Robot();
-
+            System.out.println("10 Seconds until start.");
+            for (int i=0; i<10; i++){
+            	System.out.println(10-i+"...");
+            	Thread.sleep(1000);
+            }
+            System.out.println("Go!");
             List<String> lyrics = readLyrics("data/randomshit/lyrics.txt");
 
             for (String string : lyrics) {
-                string = string.toUpperCase();
-                for (char c : string.toCharArray()) {
+            	String[] data = string.split("-=-");
+            	int waitAfter = Integer.parseInt(data[0]);
+            	String text = data[1];
+                text = text.toUpperCase();
+                for (char c : text.toCharArray()) {
                     try {
                         boolean upper = Character.isUpperCase(c);
                         KeyStroke keycode = KeyStroke.getKeyStroke(c, upper ? 1 : 0);
                         robot.keyPress(keycode.getKeyCode());
                         robot.keyRelease(keycode.getKeyCode());
-                        
+                        Thread.sleep(10);
                     } catch (java.lang.IllegalArgumentException ex) {
                         continue;
                     }
                 }
                 robot.keyPress(KeyEvent.VK_ENTER);
                 robot.keyRelease(KeyEvent.VK_ENTER);
-                Thread.sleep(2000);
+                Thread.sleep(waitAfter);
             }
         } catch (Exception e) {
             e.printStackTrace();

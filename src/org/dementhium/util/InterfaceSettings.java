@@ -119,8 +119,7 @@ public class InterfaceSettings {
 			ActionSender.sendInterface(player, 1, 548, 206, 149);
 			ActionSender.sendInterface(player, 1, 548, 207, 387);
 			ActionSender.sendInterface(player, 1, 548, 208, 271);
-			ActionSender.sendInterface(player, 1, 548, 209, player
-					.getSettings().getSpellBook());
+			ActionSender.sendInterface(player, 1, 548, 209, player.getSettings().getSpellBook());
 			ActionSender.sendInterface(player, 1, 548, 211, 550);
 			ActionSender.sendInterface(player, 1, 548, 212, 551);
 			ActionSender.sendInterface(player, 1, 548, 213, 589);

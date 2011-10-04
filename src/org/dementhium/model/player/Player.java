@@ -85,6 +85,7 @@ public final class Player extends Mob {
 	private final Prayer prayer = new Prayer(this);
 	private final RegionData region = new RegionData(this);
 	private final PriceCheck priceCheck = new PriceCheck(this);
+	private final ItemDefinition itemDef = new ItemDefinition(this);
 	private final Notes notes = new Notes(this);
 	private final Slayer slayer = new Slayer(this);
 	private final PlayerAreaTick playerAreaTick = new PlayerAreaTick(this);
@@ -93,15 +94,19 @@ public final class Player extends Mob {
 	private boolean isAtDynamicRegion;
 
 	/**
+	 * Player Dueling
+	 */
+	public boolean isStaking;
+	public boolean isFriendly;
+	/**
 	 * The skull manager used.
 	 */
 	private final SkullManager skullManager = new SkullManager(this);
 
 	/**
-	 * Dueling Shit.
+	 * Loan Timer
 	 */
-	public boolean isStaking;
-	public boolean isFriendly;
+	public int loanTimer = 0;
 	
 	/**
 	 * The quest storage used.
@@ -136,6 +141,8 @@ public final class Player extends Mob {
 	private static int[] emptyLot = RegionBuilder.findEmptyMap(40, 40); // 16x16
 	private final static Location houseLocation = Location.locate(emptyLot[0],
 			emptyLot[1], 0);
+	
+	private int tutorialStage = 0;
 
 	public Location getHouseLocation() {
 		return houseLocation;
@@ -150,7 +157,7 @@ public final class Player extends Mob {
 		this.definition = definition;
 		this.connection = connection;
 	}
-
+	
 	public void loadPlayer() {
 		handler = null;
 		if (!connection.isInLobby()) {
@@ -953,6 +960,10 @@ public final class Player extends Mob {
 		return priceCheck;
 	}
 
+	public ItemDefinition getItemDef() {
+		return itemDef;
+	}
+	
 	public int getViewDistance() {
 		return viewDistance;
 	}

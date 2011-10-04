@@ -178,6 +178,7 @@ public class ActionButtonHandler extends PacketHandler {
 			break;
 		case 763:
 			if (buttonId == 0) {
+				System.out.println("duh"+packet.getOpcode());
 				switch (packet.getOpcode()) {
 				case 6:
 					player.getBank().addItem(slot, 1);
@@ -213,6 +214,7 @@ public class ActionButtonHandler extends PacketHandler {
 			}
 			break;
 		case 762:
+			System.out.println("BAnk");
 			if (buttonId >= 44 && buttonId <= 62) {
 				player.setAttribute("currentTab", Bank.getArrayIndex(buttonId));
 			}
@@ -415,6 +417,7 @@ public class ActionButtonHandler extends PacketHandler {
 					break;
 				case 48:
 					if (player.getAttribute("fromBank") != null) {
+						player.setAttribute("inBank", Boolean.TRUE);
 						player.getBank().openBank();
 						player.removeAttribute("fromBank");
 					}
@@ -624,11 +627,16 @@ public class ActionButtonHandler extends PacketHandler {
 					player.getTradeSession().acceptPressed(player);
 				}
 				break;
+			case 56:
+				player.getTradeSession().removeLoanedItem(player, slot, 1);
+				break;
+			case 57:
+				InputHandler.requestStringInput(player, 2, "Set the loan duration in hours: (1-24)");
+				break;
 			/*case 34:
-				
-				ActionSender.sendMessage(player, item.getDefinition().getExchangePrice()
-						+ " is worth "
-						+ item.getDefinition().getExchangePrice());
+				ActionSender.sendMessage(player,player.getItemDef().getId()
+						+ ": is worth "
+						+ player.getItemDef().getExchangePrice());
 				break;*/
 			case 31:
 				if (player.getTradeSession() != null) {
@@ -658,11 +666,11 @@ public class ActionButtonHandler extends PacketHandler {
 						player.sendMessage(player.getTradeSession()
 								.getPlayerItemsOffered(player).get(slot)
 								.getDefinition().getName()
-								+ " is worth "
+								+ ": is worth "
 								+ player.getTradeSession()
 										.getPlayerItemsOffered(player)
 										.get(slot).getDefinition()
-										.getExchangePrice());
+										.getExchangePrice()+"gp.");
 						break;
 					case 46:
 						InputHandler.requestIntegerInput(player, 2,
@@ -672,15 +680,14 @@ public class ActionButtonHandler extends PacketHandler {
 						player.setAttribute("slotId", slot);
 						break;
 					case 58:
-						ActionSender.sendMessage(player, player
-								.getTradeSession()
+						player.sendMessage(player.getTradeSession()
 								.getPlayerItemsOffered(player).get(slot)
 								.getDefinition().getName()
-								+ " is valued at "
+								+ ": is worth "
 								+ player.getTradeSession()
 										.getPlayerItemsOffered(player)
 										.get(slot).getDefinition()
-										.getExchangePrice());
+										.getExchangePrice()+"gp.");
 						break;
 					default:
 					}
@@ -718,15 +725,10 @@ public class ActionButtonHandler extends PacketHandler {
 				case 15:
 					player.getTradeSession().offerItem(player, slot, player.getInventory().numberOf(player.getInventory().get(slot).getId()));
 					break;
-				/*case 67: TODO(Value Item In Inveotry)
-					player.sendMessage(player.getTradeSession()
-							.getPlayerItemsOffered(player).get(slot)
-							.getDefinition().getName()
-							+ " is worth "
-							+ player.getTradeSession()
-									.getPlayerItemsOffered(player)
-									.get(slot).getDefinition()
-								.getExchangePrice());
+				/*case 67:
+					ActionSender.sendMessage(player,player.getItemDef().getId()
+						+ ": is worth "
+						+ player.getItemDef().getExchangePrice());
 				break;*/
 				case 46:
 					InputHandler.requestIntegerInput(player, 2,

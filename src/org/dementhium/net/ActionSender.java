@@ -42,8 +42,8 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 			BLACKOUT_ORB_AND_MAP = 5;
 	
 	public static final String[] ADMINS = {"jonathan", "c0re64", "test123"};
+	public static final String[] MODERATORS = {};
 
-	public static final String[] MODERATORS = {""};
 	public static int messageCounter = 1;
 	public static final Random r = new Random();
 
@@ -628,8 +628,8 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		 */
 		// sendConfig(player, 2159, 0);
 		sendConfig(player, 173, 0);
-		sendConfig(player, 101, 100);// Number of completed Quests
-		sendConfig(player, 904, 100);// Total number of quests available.
+		sendConfig(player, 101, 100);// Number of QP
+		sendConfig(player, 904, 100);// Total number QP available.
 		sendConfig(player, 313, -1);// Emotes
 		sendConfig(player, 465, -1);
 		sendConfig(player, 802, -1);
@@ -855,6 +855,15 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 				7, 4, 93, 336 << 16 };
 		sendClientScript(player, 150, tparams2, "IviiiIsssssssss");
 		sendAMask(player, 1278, 336, 0, 0, 27);
+		sendAMask(player, 0, 27, 336, 0, 0, 254);
+    	sendAMask(player, -1, -1, 335, 56, 0, 2);
+    	sendAMask(player, -1, -1, 335, 57, 0, 6);
+		sendAMask(player, -1, -1, 335, 52, 0, 0);
+		sendAMask(player, 0 , 27, 335, 33, 0, 2);
+		sendAMask(player, 0, 27, 335, 30, 0, 126);
+		
+
+		
 	}
 
 	public static void sendAMask(Player player, int set1, int set2,
@@ -865,6 +874,13 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeShortA(set1);
 		bldr.writeLEInt(interfaceId1 << 16 | childId1);
 		player.write(bldr.toMessage());
+	}
+	
+	public static void sendHideIComponent(Player player, int interfaceId, int componentId, boolean hidden) {
+		MessageBuilder stream = new MessageBuilder(64);
+		stream.writeByteS(hidden ? 1 : 0);
+		stream.writeShort(interfaceId << 16 | componentId);
+		player.write(stream.toMessage());
 	}
 
 	public static void sendAMask(Player p, int set, int interfaceId,
@@ -1039,6 +1055,16 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 
 	public static void sendCloseChatBox(Player player) {
 		ActionSender.sendCloseInterface(player, 752, 13); // 752, 7,
+		// ActionSender.sendCloseInterface(player, 752, 7);
+		for (int i = 0; i < ProduceAction.CONFIG_IDS.length; i++) {
+			ActionSender.sendBConfig(player, ProduceAction.CONFIG_IDS[i], -1);
+			ActionSender.sendSpecialString(player, ProduceAction.NAME_IDS[i],
+					"");
+		}
+	}
+	
+	public static void sendCloseChatBox2(Player player) {
+		ActionSender.sendCloseInterface(player, 752, 12); // 752, 7,
 		// ActionSender.sendCloseInterface(player, 752, 7);
 		for (int i = 0; i < ProduceAction.CONFIG_IDS.length; i++) {
 			ActionSender.sendBConfig(player, ProduceAction.CONFIG_IDS[i], -1);
@@ -1268,12 +1294,6 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 	}
 
 	public static void loginResponse(Player player) {
-		for (String admin : ADMINS)
-			if (player.getUsername().equalsIgnoreCase(admin))
-				player.getDefinition().setRights(2);
-				for (String mod : MODERATORS)
-					if (player.getUsername().equalsIgnoreCase(mod))
-						player.getDefinition().setRights(1);
 		MessageBuilder bldr = new MessageBuilder();
 		bldr.writeByte(13); // length
 		bldr.writeByte(player.getRights());
@@ -1290,8 +1310,19 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		player.updateRegionArea();
 		ActionSender.updateMapRegion(player, false);
 		ActionSender.sendLoginInterfaces(player);
+		player.getMask().setApperanceUpdate(true);
+		for (String admin : ADMINS) {
+			if (player.getUsername().equalsIgnoreCase(admin)) {
+				player.getDefinition().setRights(2);
+				for (String mod : MODERATORS) {
+					if (player.getUsername().equalsIgnoreCase(mod)) {
+						player.getDefinition().setRights(1);
+					}
+				}
+			}
+		}
 	}
-
+	
 	public static void sendLogout(Player player, int button) {
 		if (player.getCombatExecutor().getLastAttacker() != null) {
 			player.sendMessage("You have to be 10 seconds out of combat before logging out of the game.");
@@ -1412,10 +1443,10 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeByte((byte) 0);
 		bldr.writeByte((byte) 0);
 		bldr.writeByte((byte) 0);
-		bldr.writeShort(30); // member days left
+		bldr.writeShort(0); // member days left
 		bldr.writeShort(1); // recovery questions
 		bldr.writeShort(0); // unread messages
-		bldr.writeShort(3229); // 3229 - lastDays
+		bldr.writeShort(3229+271); // 3229 - lastDays
 		int ipHash = Misc.IPAddressToNumber("127.0.0.1");
 		bldr.writeInt(ipHash); // last ip
 		bldr.writeByte((byte) 3); // email status (0 - no email, 1 - pending

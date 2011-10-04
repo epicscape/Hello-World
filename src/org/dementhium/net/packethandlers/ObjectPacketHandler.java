@@ -122,6 +122,8 @@ public class ObjectPacketHandler extends PacketHandler {
 		}
 		if (!findObjectPath(player, gameObject).isRouteFound() && objectId != 4496) {
 			player.sendMessage("I can't reach that!");
+			player.getMask().setFacePosition(Location.locate(x, y, player.getLocation().getZ()), 1, 1);
+			player.getWalkingQueue().reset();
 			return;
 		}
 		if (player.getAttribute("cantMove") == Boolean.TRUE) {
@@ -164,6 +166,7 @@ public class ObjectPacketHandler extends PacketHandler {
 				player.getBonuses().refreshEquipScreen();
 				ActionSender.sendInterface(player, 667);
 			} else {
+				player.setAttribute("inBank", Boolean.TRUE);
 				player.getBank().openBank();
 				player.removeAttribute("fromBank");
 			}
