@@ -268,8 +268,13 @@ public class DuelArenaListener extends EventListener {
      * @return {@code True} if the button was a challenge option, {@code false} if not.
      */
     private boolean handleChallengeOption(Player player, int buttonId) {
-        switch (buttonId) {
-            case 18:
+		switch (buttonId) {
+           /*( case 19:
+            case 21:
+            	ActionSender.sendConfig(player, 283, 134217728);
+                player.isStaking = true;
+                player.isFriendly = false;*/
+           case 18:
             case 21:
                 ActionSender.sendConfig(player, 283, 67108864);
                 player.setAttribute("isStaking", Boolean.FALSE);
@@ -279,9 +284,24 @@ public class DuelArenaListener extends EventListener {
                 ActionSender.sendConfig(player, 283, 134217728);
                 player.setAttribute("isStaking", Boolean.TRUE);
                 return true;
+           /* case 18:
+            case 22:
+            	ActionSender.sendConfig(player, 283, 67108864);
+                player.isFriendly = true;
+                player.isStaking = false;
+                return true;*/
             case 20:
                 ActionSender.sendMessage(player, "Sending duel request...");
-                ActionSender.sendDuelReq(World.getWorld().getPlayers().get((Short) player.getAttribute("duelWithIndex")), player.getUsername(), "wishes to duel with you " + (player.getAttribute("isStaking") == Boolean.TRUE ? "(stake)" : "(friendly)") + ".");
+                if (player.isFriendly == true) {
+                	player.isStaking = false;
+                	ActionSender.sendFriendlyDuelReq(World.getWorld().getPlayers().get((Short) player.getAttribute("duelWithIndex")), player.getUsername(), "wishes to duel with you (friendly)" + ".");
+                } else {
+                	if (player.isStaking == true) {
+                		player.isFriendly = false;
+                		ActionSender.sendStakedDuelReq(World.getWorld().getPlayers().get((Short) player.getAttribute("duelWithIndex")), player.getUsername(), "wishes to duel with you (stake)" + ".");
+                	}
+                }
+                ActionSender.sendFriendlyDuelReq(World.getWorld().getPlayers().get((Short) player.getAttribute("duelWithIndex")), player.getUsername(), "wishes to duel with you " + (player.getAttribute("isStaking") == Boolean.TRUE ? "(stake)" : "(friendly)") + ".");
                 player.setAttribute("didRequestDuel", Boolean.TRUE);
                 ActionSender.sendCloseInterface(player);
                 return true;

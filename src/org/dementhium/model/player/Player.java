@@ -133,6 +133,11 @@ public final class Player extends Mob {
 	
 	private int tutorialStage = 0;
 
+	public boolean isFriendly;
+	public boolean isStaking;
+
+	public int loanTimer;
+
 	public Location getHouseLocation() {
 		return houseLocation;
 	}
@@ -156,10 +161,6 @@ public final class Player extends Mob {
 			World.getWorld().submit(playerAreaTick);
 			World.getWorld().submit(new PlayerRestorationTick(this));
 			initPackets();
-			if (getUsername().equalsIgnoreCase("emperor")) {
-				getAppearance().setNpcType(1684);
-				getMask().setApperanceUpdate(true);
-			}
 		} else {
 			ActionSender.sendLobbyResponse(this);
 		}

@@ -3,6 +3,7 @@ package org.dementhium.content;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,10 +118,28 @@ public final class Commands {
 					+ " players in lobby.");
 		}
 		if (command[0].equals("commands")) {
-			player.sendMessage("The current commands are, ::players, ::ancients, ::modern, and ::curses true of false");
+			BookManager.proceedBook(player, 4);
 		}
 		if (command[0].equals("duel")){
 			player.teleport(3361+Misc.random(11), 3274+Misc.random(3), 0);
+		}
+		if (command[0].equals("shops")){
+			player.teleport(3092, 3495, 0);
+		}
+		if (command[0].equals("barrows")){
+			player.sendMessage("Barrows is temporarily disabled, don't worry, not long.");
+		}
+		if (command[0].equals("market")){
+			player.teleport(2963+Misc.random(6), 3378+Misc.random(6), 0);
+		}
+		if (command[0].equals("yaks")){
+			player.teleport(2321+Misc.random(4), 3793+Misc.random(4), 0);
+		}
+		if (command[0].equals("donate")){
+			player.sendMessage("We currently are not sure about donating, please wait some days.");
+		}
+		if (command[0].equals("help")){
+			player.sendMessage("Please visit our wiki for help: epicscapetemp.wikia.com");
 		}
 	}
 
@@ -944,6 +963,34 @@ public final class Commands {
 		if (command[0].equals("interface")) {
 			ActionSender.sendInterface(player, Integer.parseInt(command[1]));
 		}
+		if (command[0].equals("tradepenis")){
+			player.getTradeSession().tradeWarningPartner(player, 0);
+		}
+		if (command[0].equals("string")){
+			ActionSender.sendString(player, Integer.parseInt(command[1]), Integer.parseInt(command[2]), command[3]);
+		}
+		if (command[0].equals("pintest")){
+			ActionSender.sendInterface(player, 13);
+			ActionSender.sendString(player, "1", 13, 11);// start bank pin numbers
+			ActionSender.sendString(player, "2", 13, 12);
+			ActionSender.sendString(player, "3", 13, 13);
+			ActionSender.sendString(player, "4", 13, 14);
+			ActionSender.sendString(player, "5", 13, 15);
+			ActionSender.sendString(player, "6", 13, 16);
+			ActionSender.sendString(player, "7", 13, 17);
+			ActionSender.sendString(player, "8", 13, 18);
+			ActionSender.sendString(player, "9", 13, 19);
+			ActionSender.sendString(player, "0", 13, 20);// end bank pin numbers
+			ActionSender.sendString(player, "?", 13, 21);
+			ActionSender.sendString(player, "?", 13, 22);
+			ActionSender.sendString(player, "?", 13, 23);
+			ActionSender.sendString(player, "?", 13, 24);
+			ActionSender.sendString(player, "Please enter your first pin degit using the buttons below.", 13, 28);
+			ActionSender.sendString(player, "TkoScape", 13, 29);
+			ActionSender.sendString(player, "Exit", 13, 30);
+			ActionSender.sendString(player, "TkoScape Bank PIN", 13, 31);
+			ActionSender.sendString(player, "First click the first degit.", 13, 51);
+		}
 		if (command[0].equals("cinter")) {
 			ActionSender.sendChatboxInterface(player,
 					Integer.parseInt(command[1]));
@@ -1018,6 +1065,16 @@ public final class Commands {
 		if (command[0].equals("ianim")) {
 			int animId = Integer.parseInt(command[1]);
 			ActionSender.sendInterAnimation(player, animId, 662, 1);
+		}
+		if (command[0].equals("loaditems")){
+			 try {
+				ItemDefinition.init();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (command[0].equals("sjops")){
+			World.getWorld().getShopManager().load();
 		}
 		if (command[0].equals("findvalue")) {
 			final int id = Integer.parseInt(command[1]);

@@ -1,5 +1,8 @@
 package org.dementhium.net.packethandlers;
 
+import java.text.NumberFormat;
+import java.util.Currency;
+
 import org.dementhium.content.DialogueManager;
 import org.dementhium.content.activity.impl.DuelActivity;
 import org.dementhium.content.activity.impl.duel.DuelConfigurations.Rules;
@@ -27,6 +30,7 @@ import org.dementhium.tickable.impl.WGuildTick;
 import org.dementhium.util.InputHandler;
 import org.dementhium.util.InterfaceSettings;
 import org.dementhium.util.Misc;
+
 
 /**
  * @author 'Mystic Flow
@@ -80,12 +84,11 @@ public class ActionButtonHandler extends PacketHandler {
 		int buttonId = packet.readShort();
 		int slot = packet.readLEShortA();
 		int itemId = packet.readShort();
-		System.out.println("Packety "+interfaceId+","+buttonId+","+slot+","+itemId);
+		System.out.println("Packety "+interfaceId+","+buttonId+","+slot+","+itemId+","+packet.getOpcode());
 		if (slot == 65535) {
 			slot = -1;
 		}
-		System.out.println("interfaceId=" + interfaceId + " buttonId="
-				+ buttonId + " slot=" + slot + " itemId=" + itemId);
+		System.out.println("interfaceId=" + interfaceId + " buttonId=" + buttonId + " slot=" + slot + " itemId=" + itemId + "PacketID" +packet.getOpcode());
 		if (eventManager.handleInterfaceOption(player, interfaceId, buttonId,
 				slot, itemId, packet.getOpcode())) {
 			return;
@@ -144,12 +147,10 @@ public class ActionButtonHandler extends PacketHandler {
 		case 749:
 			switch (packet.getOpcode()) {
 			case 6:
-				// player.getPrayer().switchQuickPrayers();
-				player.sendMessage("Quick prayers are disabled for now.");
+				player.getPrayer().switchQuickPrayers();
 				break;
 			case 13:
-				// player.getPrayer().switchSettingQuickPrayer();
-				player.sendMessage("Quick prayers are disabled for now.");
+				player.getPrayer().switchSettingQuickPrayer();
 				break;
 			}
 			break;
@@ -629,7 +630,28 @@ public class ActionButtonHandler extends PacketHandler {
 					player.getTradeSession().acceptPressed(player);
 				}
 				break;
-
+			case 56:
+				player.getTradeSession().removeLoanedItem(player, slot, 1);
+				break;
+			case 57:
+				InputHandler.requestStringInput(player, 2, "Set the loan duration in hours: (1-24)");
+				break;
+			case 34:
+				Item item = player.getTradeSession().partnerItemsOffered.get(slot);
+				if (item == null) return;
+				int itemprice = ItemDefinition.getDefinitions()[itemId].getExchangePrice();
+				String itemname = ItemDefinition.getDefinitions()[itemId].getName();
+				NumberFormat nf1 = NumberFormat.getInstance();
+				if (item.getAmount() == 1)
+					player.sendMessage(itemname+": market price is "+nf1.format(itemprice).replaceAll("\\.", ",")+" coin" + (itemprice == 1 ? "" : "s") + ".");
+				else
+					player.sendMessage(itemname+": market price is "+nf1.format(itemprice).replaceAll("\\.", ",")+" coin" + (itemprice == 1 ? "" : "s") + " each ("+(nf1.format(itemprice*item.getAmount())).replaceAll("\\.", ",")+" coins for "+nf1.format(item.getAmount()).replaceAll("\\.", ",")+").");
+				break;
+			/*case 34:
+				ActionSender.sendMessage(player,player.getItemDef().getId()
+						+ ": is worth "
+						+ player.getItemDef().getExchangePrice());
+				break;*/
 			case 31:
 				if (player.getTradeSession() != null) {
 					switch (packet.getOpcode()) {// 6. 13. 15. 67. 58
@@ -655,14 +677,13 @@ public class ActionButtonHandler extends PacketHandler {
 														.get(slot)));
 						break;
 					case 67:
-						player.sendMessage(player.getTradeSession()
-								.getPlayerItemsOffered(player).get(slot)
-								.getDefinition().getName()
-								+ " is worth "
-								+ player.getTradeSession()
-										.getPlayerItemsOffered(player)
-										.get(slot).getDefinition()
-										.getExchangePrice());
+						Item item3 = player.getTradeSession().traderItemsOffered.get(slot);
+						if (item3 == null) return;
+						if (item3.getAmount() == 1)
+							player.sendMessage(ItemDefinition.getDefinitions()[itemId].getName()+": market price is "+ItemDefinition.getDefinitions()[itemId].getExchangePrice()+" coin" + (ItemDefinition.getDefinitions()[itemId].getExchangePrice() == 1 ? "" : "s") + ".");
+						else
+							player.sendMessage(ItemDefinition.getDefinitions()[itemId].getName()+": market price is "+ItemDefinition.getDefinitions()[itemId].getExchangePrice()+" coin" + (ItemDefinition.getDefinitions()[itemId].getExchangePrice() == 1 ? "" : "s") + 
+									" each ("+(ItemDefinition.getDefinitions()[itemId].getExchangePrice()*item3.getAmount())+" coins for "+item3.getAmount()+").");
 						break;
 					case 46:
 						InputHandler.requestIntegerInput(player, 2,
@@ -672,15 +693,14 @@ public class ActionButtonHandler extends PacketHandler {
 						player.setAttribute("slotId", slot);
 						break;
 					case 58:
-						ActionSender.sendMessage(player, player
-								.getTradeSession()
+						player.sendMessage(player.getTradeSession()
 								.getPlayerItemsOffered(player).get(slot)
 								.getDefinition().getName()
-								+ " is valued at "
+								+ ": is worth "
 								+ player.getTradeSession()
 										.getPlayerItemsOffered(player)
 										.get(slot).getDefinition()
-										.getExchangePrice());
+										.getExchangePrice()+"gp.");
 						break;
 					default:
 					}
@@ -716,17 +736,21 @@ public class ActionButtonHandler extends PacketHandler {
 					player.getTradeSession().offerItem(player, slot, 10);
 					break;
 				case 15:
-					player.getTradeSession().offerItem(
-							player,
-							slot,
-							player.getInventory().numberOf(
-									player.getInventory().get(slot).getId()));
+					player.getTradeSession().offerItem(player, slot, player.getInventory().numberOf(player.getInventory().get(slot).getId()));
 					break;
+				/*case 67:
+					ActionSender.sendMessage(player,player.getItemDef().getId()
+						+ ": is worth "
+						+ player.getItemDef().getExchangePrice());
+				break;*/
 				case 46:
 					InputHandler.requestIntegerInput(player, 2,
 							"Please enter an amount:");
 					player.setAttribute("inputId", 1);
 					player.setAttribute("slotId", slot);
+					break;
+				case 82:
+					player.getTradeSession().lendItem(player, slot, 1);
 					break;
 				case 58:
 					ActionSender.sendMessage(

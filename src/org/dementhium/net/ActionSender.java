@@ -1521,4 +1521,25 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeLEShortA(item.getItem().getAmount());
 		player.write(bldr.toMessage());
 	}
+
+	
+	public static void sendStakedDuelReq(Player player, String user, String message) {
+		MessageBuilder bldr = new MessageBuilder(53, PacketType.VAR_BYTE);
+		bldr.writeByte(106);
+		bldr.writeInt(0);
+		bldr.writeByte(0x1);
+		bldr.writeRS2String(Misc.formatPlayerNameForDisplay(user));
+		bldr.writeRS2String(message);
+		player.write(bldr.toMessage());
+	}
+	
+	public static void sendFriendlyDuelReq(Player player, String user, String message) {
+		MessageBuilder bldr = new MessageBuilder(53, PacketType.VAR_BYTE);
+		bldr.writeByte(105);
+		bldr.writeInt(0);
+		bldr.writeByte(0x1);
+		bldr.writeRS2String(Misc.formatPlayerNameForDisplay(user));
+		bldr.writeRS2String(message);
+		player.write(bldr.toMessage());
+	}
 }

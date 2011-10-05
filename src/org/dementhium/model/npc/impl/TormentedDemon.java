@@ -121,13 +121,16 @@ public class TormentedDemon extends NPC {
 	public Damage updateHit(Mob source, int hit, CombatType type) {
 		int currentHit = hit;
 		if (CombatUtils.usingProtection(this, type)) {
+			System.out.println("Was "+currentHit);
 			currentHit = (int) (hit * (source.isPlayer() ? 0.6 : 0));
+			System.out.println("What a shit "+currentHit);
 		}
 		if (shieldActive) {
 			currentHit -= hit * 0.75;
 			if (currentHit < 0) {
 				currentHit = 0;
 			}
+			System.out.println("Empty? "+currentHit);
 		}
 		if (source.isPlayer() && currentHit > 0) {
 			if (source.getPlayer().getEquipment().getSlot(3) == 6746) {

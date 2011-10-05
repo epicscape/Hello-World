@@ -288,14 +288,14 @@ public class Skills {
 		ActionSender.sendSkillLevel(player, skill);
 	}
 
-	public static final double XP_MODIFIER = 50.0;
+	public static final double XP_MODIFIER = 40.0;
 
 	public void addExperience(int skill, double exp) {
 		int oldLevel = getLevelForExperience(skill);
 		int oldCombat = getCombatLevel();
 		double experience;
 		if (skill == ATTACK || skill == DEFENCE || skill == STRENGTH || skill == RANGE || skill == MAGIC || skill == HITPOINTS) {
-			experience = exp * XP_MODIFIER * 2;
+			experience = exp * XP_MODIFIER * 1.5;
 		} else {
 			experience = exp * (player.isDoubleXP() ? (XP_MODIFIER * 1.5) : (XP_MODIFIER));
 		}
