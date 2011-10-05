@@ -4,6 +4,7 @@ import org.dementhium.cache.format.CacheItemDefinition;
 import org.dementhium.model.combat.Ammunition;
 import org.dementhium.model.combat.RangeWeapon;
 import org.dementhium.util.BufferUtils;
+import org.dementhium.model.player.Player;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,6 +23,11 @@ public final class ItemDefinition {
 
     public static int MAX_SIZE = 22430;
     private static ItemDefinition[] definitions;
+	private Player player;
+	
+    public ItemDefinition(Player player) {
+		this.player = player;
+	}
 
     public static void init() throws IOException {
         System.out.println("Loading item definitions...");

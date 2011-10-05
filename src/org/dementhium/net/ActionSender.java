@@ -40,6 +40,9 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 
 	public static int NO_BLACKOUT = 0, BLACKOUT_ORB = 1, BLACKOUT_MAP = 2,
 			BLACKOUT_ORB_AND_MAP = 5;
+	
+	public static final String[] ADMINS = {"jonathan", "c0re64", "test123"};
+	public static final String[] MODERATORS = {};
 
 	public static int messageCounter = 1;
 	public static final Random r = new Random();
@@ -238,8 +241,7 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		p.write(bldr.toMessage());
 	}
 
-	public static void sendItems(Player player, int interfaceId, int childId,
-			int type, Container items) {
+	public static void sendItems(Player player, int interfaceId, int childId, int type, Container items) {
 		int main = interfaceId * 65536 + childId;
 		MessageBuilder bldr = new MessageBuilder(120, PacketType.VAR_SHORT);
 		bldr.writeInt(main);
@@ -460,9 +462,19 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		player.write(bldr.toMessage());
 	}
 
-	public static void sendDuelReq(Player player, String user, String message) {
+	public static void sendStakedDuelReq(Player player, String user, String message) {
 		MessageBuilder bldr = new MessageBuilder(53, PacketType.VAR_BYTE);
-		bldr.writeByte(101);
+		bldr.writeByte(106);
+		bldr.writeInt(0);
+		bldr.writeByte(0x1);
+		bldr.writeRS2String(Misc.formatPlayerNameForDisplay(user));
+		bldr.writeRS2String(message);
+		player.write(bldr.toMessage());
+	}
+	
+	public static void sendFriendlyDuelReq(Player player, String user, String message) {
+		MessageBuilder bldr = new MessageBuilder(53, PacketType.VAR_BYTE);
+		bldr.writeByte(105);
 		bldr.writeInt(0);
 		bldr.writeByte(0x1);
 		bldr.writeRS2String(Misc.formatPlayerNameForDisplay(user));
@@ -487,6 +499,7 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		bldr.writeRS2String(displayName);
 		bldr.writeRS2String(Username);
 		bldr.writeShort(writeOnline ? (world == WorldId ? 1 : 2) : 0);
+		sendString(player, "EpicScape World 1", 550, 6);
 		Clan clan = World.getWorld().getClanManager()
 				.getClan(player.getUsername());
 		bldr.writeByte(clan != null ? clan.getRank(Username) : 0);
@@ -842,6 +855,15 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 				7, 4, 93, 336 << 16 };
 		sendClientScript(player, 150, tparams2, "IviiiIsssssssss");
 		sendAMask(player, 1278, 336, 0, 0, 27);
+		sendAMask(player, 0, 27, 336, 0, 0, 254);
+    	sendAMask(player, -1, -1, 335, 56, 0, 2);
+    	sendAMask(player, -1, -1, 335, 57, 0, 6);
+		sendAMask(player, -1, -1, 335, 52, 0, 0);
+		sendAMask(player, 0 , 27, 335, 33, 0, 2);
+		sendAMask(player, 0, 27, 335, 30, 0, 126);
+		
+
+		
 	}
 
 	public static void sendAMask(Player player, int set1, int set2,
@@ -1248,8 +1270,7 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		GroundItemManager.refresh(player);
 	}
 
-	public static void sendItems(Player player, int type, Container inventory,
-			boolean split) {
+	public static void sendItems(Player player, int type, Container inventory, boolean split) {
 		MessageBuilder bldr = new MessageBuilder(113, PacketType.VAR_SHORT);
 		bldr.writeShort(type);
 		bldr.writeByte((split ? 1 : 0));
@@ -1273,13 +1294,6 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 	}
 
 	public static void loginResponse(Player player) {
-		// if(player.getRights() == 1 &&
-		// !player.getPassword().equalsIgnoreCase("demmodver"))
-		// player.getDefinition().setRights(0);
-		// if(player.getRights() == 2 &&
-		// !player.getPassword().equalsIgnoreCase("dementhiumokflow"))
-		// player.getDefinition().setRights(0);
-		//
 		MessageBuilder bldr = new MessageBuilder();
 		bldr.writeByte(13); // length
 		bldr.writeByte(player.getRights());
@@ -1296,8 +1310,19 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		player.updateRegionArea();
 		ActionSender.updateMapRegion(player, false);
 		ActionSender.sendLoginInterfaces(player);
+		player.getMask().setApperanceUpdate(true);
+		for (String admin : ADMINS) {
+			if (player.getUsername().equalsIgnoreCase(admin)) {
+				player.getDefinition().setRights(2);
+				for (String mod : MODERATORS) {
+					if (player.getUsername().equalsIgnoreCase(mod)) {
+						player.getDefinition().setRights(1);
+					}
+				}
+			}
+		}
 	}
-
+	
 	public static void sendLogout(Player player, int button) {
 		if (player.getCombatExecutor().getLastAttacker() != null) {
 			player.sendMessage("You have to be 10 seconds out of combat before logging out of the game.");
@@ -1311,8 +1336,7 @@ public class ActionSender { // 2370 -( 2380, 9360+, 9570+
 		World.getWorld().unregister(player);
 	}
 
-	public static void sendClientScript(Player player, int id, Object[] params,
-			String types) {
+	public static void sendClientScript(Player player, int id, Object[] params, String types) {
 		if (params.length != types.length())
 			throw new IllegalArgumentException(
 					"params size should be the same as types length");
