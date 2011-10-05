@@ -677,13 +677,15 @@ public class ActionButtonHandler extends PacketHandler {
 														.get(slot)));
 						break;
 					case 67:
-						Item item3 = player.getTradeSession().traderItemsOffered.get(slot);
-						if (item3 == null) return;
-						if (item3.getAmount() == 1)
-							player.sendMessage(ItemDefinition.getDefinitions()[itemId].getName()+": market price is "+ItemDefinition.getDefinitions()[itemId].getExchangePrice()+" coin" + (ItemDefinition.getDefinitions()[itemId].getExchangePrice() == 1 ? "" : "s") + ".");
+						Item item4 = player.getTradeSession().partnerItemsOffered.get(slot);
+						if (item4 == null) return;
+						int itemprice2 = ItemDefinition.getDefinitions()[itemId].getExchangePrice();
+						String itemname2 = ItemDefinition.getDefinitions()[itemId].getName();
+						NumberFormat nf2 = NumberFormat.getInstance();
+						if (item4.getAmount() == 1)
+							player.sendMessage(itemname2+": market price is "+nf2.format(itemprice2).replaceAll("\\.", ",")+" coin" + (itemprice2 == 1 ? "" : "s") + ".");
 						else
-							player.sendMessage(ItemDefinition.getDefinitions()[itemId].getName()+": market price is "+ItemDefinition.getDefinitions()[itemId].getExchangePrice()+" coin" + (ItemDefinition.getDefinitions()[itemId].getExchangePrice() == 1 ? "" : "s") + 
-									" each ("+(ItemDefinition.getDefinitions()[itemId].getExchangePrice()*item3.getAmount())+" coins for "+item3.getAmount()+").");
+							player.sendMessage(itemname2+": market price is "+nf2.format(itemprice2).replaceAll("\\.", ",")+" coin" + (itemprice2 == 1 ? "" : "s") + " each ("+(nf2.format(itemprice2*item4.getAmount())).replaceAll("\\.", ",")+" coins for "+nf2.format(item4.getAmount()).replaceAll("\\.", ",")+").");
 						break;
 					case 46:
 						InputHandler.requestIntegerInput(player, 2,
