@@ -1,0 +1,35 @@
+Content:
+
+
+Bugs:
+
+-------------------------------TODO--------------------------------
+
+- Dagger attack animations.
+- Someone fucked up my level up shit, thus this needs fixing (the flashing icons in the Skills tab).
+- Cabbage can't be eaten.
+- Home teleport is not interupted by combat.
+- Stronghold of security monsters are supposed to be aggressive.
+- Make the destroy option actually destroy the items, rather than dropping them.
+- Interfaces don't get closed when getting hit, doing an item action(bone burrying), etc.
+- Picking up an item while in combat and having auto-retaliate on will stop walking to the 
+		item and continue combat when being hit (doesn't do it on rs).
+- Teleports don't work.
+- Teletabs don't work.
+- No altar at home.
+- Run energy isn't increasing properly for resting.
+- "That player is already in combat" while attacking an NPC in combat.
+- Shop randomly switches from eg. general store to aubury's rune store.
+
+
+
+-------------------------------FIXED-------------------------------
+
+-	Disable overloads in wilderness (if you still have the effects somehow stop them from entering/end the effects)(done - steve)
+-	Combat following is broken (you will stop like 2 squares away) (fixed > MYSTIC FLOW <)
+-	Hitting way more than the npc's hp to kill them (fixed - zach)
+-	When you first login, and you're in an area with aggressive npcs, and they start attacking you they don't hit you anymore 
+		(my guess is something hasn't loaded yet, so it's glitching out). (fixed Mystic Flow')
+-	Bonuses are weird, like I can only deal damage to man if I have full bandos & a firecape on 
+		(I've looked at this and it seems like you can only hit with a weapon equiped - zach)
+-	Some projectile stuff is wrong(no big deal) (kinda fixed)
