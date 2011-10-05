@@ -92,19 +92,24 @@ public class Skills {
           }
           dead = true;
           Mob last = player.getCombatExecutor().getLastAttacker();
+          System.out.println("lelelel0");
           if (last != null) {
           		last.setAttribute("combatTicks", 0);
           }
+          System.out.println("lelelel1");
           World.getWorld().submit(new Tick(1) {
         	  public void execute() {
+        		  System.out.println("lelelel2");
         		  stop();
         		  if (!player.isOnline() || player.destroyed()) {
         			  return;
         		  }
+        		  System.out.println("lelelel3");
         		  player.animate(9055);
         		  Prayer.wrathEffect(player, player.getCombatExecutor().getLastAttacker());
         		  Prayer.retributionEffect(player, player.getCombatExecutor().getLastAttacker());
         		  player.removeTick("nex_virus");
+        		  System.out.println("lelelel4");
         		  player.submitTick("death_tick", new Tick(4) {
         			  @Override
         			  public void execute() {

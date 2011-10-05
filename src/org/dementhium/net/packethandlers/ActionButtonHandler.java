@@ -636,7 +636,6 @@ public class ActionButtonHandler extends PacketHandler {
 			case 57:
 				InputHandler.requestStringInput(player, 2, "Set the loan duration in hours: (1-24)");
 				break;
-<<<<<<< HEAD
 			case 34:
 				Item item = player.getTradeSession().partnerItemsOffered.get(slot);
 				if (item == null) return;
@@ -648,8 +647,6 @@ public class ActionButtonHandler extends PacketHandler {
 				else
 					player.sendMessage(itemname+": market price is "+nf1.format(itemprice).replaceAll("\\.", ",")+" coin" + (itemprice == 1 ? "" : "s") + " each ("+(nf1.format(itemprice*item.getAmount())).replaceAll("\\.", ",")+" coins for "+nf1.format(item.getAmount()).replaceAll("\\.", ",")+").");
 				break;
-=======
->>>>>>> d9616223ef4c9f16b6274d636e789bf214d81346
 			/*case 34:
 				ActionSender.sendMessage(player,player.getItemDef().getId()
 						+ ": is worth "
@@ -680,7 +677,6 @@ public class ActionButtonHandler extends PacketHandler {
 														.get(slot)));
 						break;
 					case 67:
-<<<<<<< HEAD
 						Item item3 = player.getTradeSession().traderItemsOffered.get(slot);
 						if (item3 == null) return;
 						if (item3.getAmount() == 1)
@@ -688,16 +684,6 @@ public class ActionButtonHandler extends PacketHandler {
 						else
 							player.sendMessage(ItemDefinition.getDefinitions()[itemId].getName()+": market price is "+ItemDefinition.getDefinitions()[itemId].getExchangePrice()+" coin" + (ItemDefinition.getDefinitions()[itemId].getExchangePrice() == 1 ? "" : "s") + 
 									" each ("+(ItemDefinition.getDefinitions()[itemId].getExchangePrice()*item3.getAmount())+" coins for "+item3.getAmount()+").");
-=======
-						player.sendMessage(player.getTradeSession()
-								.getPlayerItemsOffered(player).get(slot)
-								.getDefinition().getName()
-								+ ": is worth "
-								+ player.getTradeSession()
-										.getPlayerItemsOffered(player)
-										.get(slot).getDefinition()
-										.getExchangePrice()+"gp.");
->>>>>>> d9616223ef4c9f16b6274d636e789bf214d81346
 						break;
 					case 46:
 						InputHandler.requestIntegerInput(player, 2,

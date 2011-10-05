@@ -89,6 +89,7 @@ public final class Commands {
 		}
 	}
 
+	// [16:24:24] 1836 - 3145729 (0x300001) > 1048579 (0x100003)
 	public static void playerCommands(final Player player, String[] command) {
 		if (command[0].equals("commands") || command[0].equals("help")) {
 			BookManager.proceedBook(player, 4);
@@ -259,11 +260,6 @@ public final class Commands {
 	}
 
 	public static void adminCommands(final Player player, String[] command) {
-		if (command[0].equals("showstrings")) {
-			for (int i = 0; i < 58; i++) {
-				ActionSender.sendString(player, Integer.toString(i), Integer.parseInt(command[1]), i);
-			}
-		}
 		if (command[0].equals("shopfree")) {
 			ActionSender.sendConfig(player, 118, 4);
 			ActionSender.sendConfig(player, 1496, -1);
@@ -1050,12 +1046,13 @@ public final class Commands {
 		if (command[0].equals("findconfig")) {
 			if (command.length == 1) {
 				World.getWorld().submit(new Tick(2) {
-					int i = 1000;
+					int i = 320;
 
 					@Override
 					public void execute() {
 						if (i != -1 && i != 1800) {
-							ActionSender.sendMessage(player, "Testing config: "+ i);
+							ActionSender.sendMessage(player, "Testing config: "
+									+ i);
 							ActionSender.sendConfig(player, i, 1);
 							i++;
 						} else {

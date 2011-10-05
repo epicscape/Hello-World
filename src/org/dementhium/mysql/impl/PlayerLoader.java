@@ -44,6 +44,7 @@ public class PlayerLoader {
 	private DatabaseManager database;
 
 	public PlayerLoader() {
+		System.out.println("poop");
 		try {
 			database = DatabaseManager.create("127.0.0.1", "userdb", "root", "");
 			database.establishConnection();
@@ -58,6 +59,7 @@ public class PlayerLoader {
 
 
 	public PlayerLoadResult load(GameSession connection, PlayerDefinition def) {
+		System.out.println("pee");
 		int code = 2;
 		Player player = null;
 		if (!accountExists(def.getName(), def.getPassword())) {
@@ -156,9 +158,10 @@ public class PlayerLoader {
 	}
 
 	public boolean load(Player player) {
+		System.out.println("lol");
 		ResultSet resultSet = null;
 		try {
-			System.out.println("Player: "+player.getUsername()+" has been loaded successfully");
+			System.out.println("hu "+player.getUsername());
 			resultSet = database.executeQuery("SELECT * FROM " + PLAYER_TABLE + " WHERE username='" + player.getUsername() + "' LIMIT 1");
 			if (resultSet.next()) {
 				player.loadSQL(resultSet);
@@ -240,4 +243,5 @@ public class PlayerLoader {
 			e.printStackTrace();
 		}
 	}
+
 }
