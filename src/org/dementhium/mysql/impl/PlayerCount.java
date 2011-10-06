@@ -15,7 +15,7 @@ public class PlayerCount implements Runnable {
 
 	public PlayerCount() {
 		try {
-			database = DatabaseManager.create("127.0.0.1", "userdb", "root", "");
+			database = DatabaseManager.create("127.0.0.1", "userdb", "root", "bartpelle");
 			database.establishConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();

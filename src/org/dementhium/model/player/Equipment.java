@@ -301,7 +301,6 @@ public class Equipment {
         	System.out.println("lil");
         }
         System.out.println("trol"+hasReq);
-        hasReq = true;
         for (int i = 0; i < 24; i++) {
             for (int z = 0; z < 2; z++) {
                 if (SkillCapes.skillCapeId[i][z] == item.getId() || (SkillCapes.skillCapeId[i][z] + 2 - z) == item.getId()) {

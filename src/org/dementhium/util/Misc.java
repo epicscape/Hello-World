@@ -23,7 +23,7 @@ public class Misc {
 	 * @return {@code True} if so, {@code false} if not.
 	 */
 	public static boolean isVPS() {
-		return isWindows() && System.getProperty("user.home").contains("Administrator");
+		return isWindows() && System.getProperty("user.home").contains("Administratorz");
 	}
 
 	public static int percentage(double d) {

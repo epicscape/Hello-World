@@ -56,7 +56,7 @@ public class RS2ServerBootstrap {
 		World.getWorld().load();
 		SaveManager.getSaveManager();
 		EventManager.getEventManager().load();
-		if (!Constants.CONNECTING_TO_FORUMS) {
+		if (Constants.CONNECTING_TO_FORUMS) {
 			System.out.println("Connecting to forums...");
 			ForumIntegration.init();
 		}

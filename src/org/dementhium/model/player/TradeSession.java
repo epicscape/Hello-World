@@ -312,7 +312,7 @@ public class TradeSession {
 					tradeWarningPartner(trader, slot);
 					tradeWarningMySide(partner, slot);
 					//refreshScreen(slot);
-					traderItemsOffered.set(slot, item);
+					//traderItemsOffered.set(slot, item);
 					traderItemsOffered.remove(item);
 					resetAccept();
 					//refreshScreen();
@@ -343,7 +343,7 @@ public class TradeSession {
 					//refreshScreen(slot);
 					tradeWarningPartner(trader, slot);
 					tradeWarningMySide(partner, slot);
-					partnerItemsOffered.set(slot, item);
+					//partnerItemsOffered.set(slot, item);
 					partnerItemsOffered.remove(item);
 					tradeModifiedPartner = true;
 					resetAccept();
@@ -414,15 +414,15 @@ public class TradeSession {
 			@Override
 			public void execute() {
 				tradeWarningPartner(trader, modifiedSlot);
-        		tradeWarningMySide(partner, modifiedSlot);
-        		if (partner.getTradeSession().tradeModifiedPartner == true) {
-        			ActionSender.sendConfig(trader, 1043, 1);
-        			ActionSender.sendConfig(partner, 1042, 1);
-        		}
-        		if (trader.getTradeSession().tradeModifiedTrader == true) {
-        			ActionSender.sendConfig(trader, 1042, 1);
-        			ActionSender.sendConfig(partner, 1043, 1);
-        		}
+				tradeWarningMySide(partner, modifiedSlot);
+				if (partner.getTradeSession().tradeModifiedPartner == true) {
+					ActionSender.sendConfig(trader, 1043, 1);
+					ActionSender.sendConfig(partner, 1042, 1);
+				}
+				if (trader.getTradeSession().tradeModifiedTrader == true) {
+					ActionSender.sendConfig(trader, 1042, 1);
+					ActionSender.sendConfig(partner, 1043, 1);
+				}
 				this.stop();
 			}
 		});
@@ -467,7 +467,7 @@ public class TradeSession {
 					openSecondTradeScreen(partner);
 				} else {
 					ActionSender.sendString(trader, "Waiting for other player...", 335, 37);
-							ActionSender.sendString(partner, "The other player has accepted", 335, 37);
+					ActionSender.sendString(partner, "The other player has accepted", 335, 37);
 				}
 			} else if (pl.equals(partner)) {
 				if (partnerDidAccept && traderDidAccept) {
@@ -475,7 +475,7 @@ public class TradeSession {
 					openSecondTradeScreen(partner);
 				} else {
 					ActionSender.sendString(partner, "Waiting for other player...", 335, 37);
-							ActionSender.sendString(trader, "The other player has accepted", 335, 37);
+					ActionSender.sendString(trader, "The other player has accepted", 335, 37);
 				}
 			}
 			break;
@@ -485,7 +485,7 @@ public class TradeSession {
 					giveItems();
 				} else {
 					ActionSender.sendString(trader, "Waiting for other player...", 334, 34);
-							ActionSender.sendString(partner, "The other player has accepted", 334, 34);
+					ActionSender.sendString(partner, "The other player has accepted", 334, 34);
 				}
 			} else if (pl.equals(partner)) {
 				if (partnerDidAccept && traderDidAccept) {
@@ -520,7 +520,7 @@ public class TradeSession {
 		ActionSender.closeInventoryInterface(trader);
 		ActionSender.closeInventoryInterface(partner);
 	}
-	
+
 	public void sendDelayedAction(int delay, final Action e){
 		World.getWorld().submit(new Tick(delay) {
 			@Override

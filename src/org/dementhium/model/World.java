@@ -126,6 +126,7 @@ public final class World implements Runnable {
 		ItemDefinition.init();
 		NPCDefinition.init();
 		NPCLoader.load();
+		System.out.println(NPCDefinition.forName("Revenant demon").getId());
 		Agility.init();
 		LeatherCrafting.init();
 		RegionBuilder.init();

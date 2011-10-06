@@ -22,11 +22,11 @@ public class PunishHandler {
 
     public boolean isMuted(Player p) {
         boolean muted = false;
-        //if (mutedPlayers.contains(p.getUsername())) {
-          //  muted = true;
-//        } else if (mutedIps.contains(formatIp(p.getConnection().getChannel().getRemoteAddress().toString()))) {
-         //   muted = true;
-        //s}
+        if (mutedPlayers.contains(p.getUsername())) {
+            muted = true;
+        } else if (mutedIps.contains(formatIp(p.getConnection().getChannel().getRemoteAddress().toString()))) {
+            muted = true;
+        }
         return muted;
     }
 

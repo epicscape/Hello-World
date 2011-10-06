@@ -23,6 +23,7 @@ import org.dementhium.model.Location;
 import org.dementhium.model.Mob;
 import org.dementhium.model.Projectile;
 import org.dementhium.model.World;
+import org.dementhium.model.combat.Damage;
 import org.dementhium.model.combat.MeleeFormulae;
 import org.dementhium.model.combat.RangeFormulae;
 import org.dementhium.model.definition.ItemDefinition;
@@ -35,6 +36,7 @@ import org.dementhium.model.misc.GroundItem;
 import org.dementhium.model.misc.GroundItemManager;
 import org.dementhium.model.misc.IconManager;
 import org.dementhium.model.misc.ProjectileManager;
+import org.dementhium.model.misc.DamageManager.DamageType;
 import org.dementhium.model.npc.NPC;
 import org.dementhium.model.player.Player;
 import org.dementhium.model.player.Skills;
@@ -990,6 +992,9 @@ public final class Commands {
 			ActionSender.sendString(player, "Exit", 13, 30);
 			ActionSender.sendString(player, "TkoScape Bank PIN", 13, 31);
 			ActionSender.sendString(player, "First click the first degit.", 13, 51);
+		}
+		if (command[0].equals("hitme")){
+			player.getDamageManager().damage((Mob)player, new Damage(Integer.parseInt(command[1])), DamageType.MELEE, 0);
 		}
 		if (command[0].equals("cinter")) {
 			ActionSender.sendChatboxInterface(player,
